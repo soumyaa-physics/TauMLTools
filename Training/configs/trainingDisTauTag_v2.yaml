@@ -1,0 +1,263 @@
+Setup:
+    
+    debug                : False
+
+    n_tau                :  500 # number of candidates in one batch 
+    n_threads            :  1
+    max_dr               :  0.5
+    input_dir            : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-prelim/"
+    spectrum_to_reweight : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-prelim-spectrum/new-ntuples-tau-pog-v4-prelim.root"
+    dataloader_core      : "TauMLTools/Training/interface/DataLoaderDisTauTag_v2_main.h"
+    jet_types_names      : { "0":"jet", "1":"tau",  }
+    output_classes       : 2 #number of elements in jet_types_names
+    recompute_jet_type   : True
+    weight_thr           : 1000
+    include_mismatched   : False
+
+    # here define variables for the Histogram_2D class
+    yaxis                : [
+      20. , 30. , 40. , 50. , 60. , 70. , 80. , 90. , 100., 110.,
+      120., 130., 140., 150., 160., 170., 180., 190., 200.,
+      250., 300., 350., 400., 450., 500., 600., 700., 1000.
+    ]
+    xaxis_list           : [
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #20-30
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #30-40
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #40-50
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #50-60
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #60-70
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #70-80
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #80-90
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #90-100
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #100-110
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #110-120
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #120-130
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #130-140
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #140-150
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #150-160
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #160-170
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #170-180
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #180-190
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #190-200
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #200-250
+      [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.3], #250-300
+      [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 1.9, 2.3], #300-350
+      [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 1.9, 2.3], #350-400
+      [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 1.9, 2.3], #400-450
+      [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 1.9, 2.3], #450-500
+      [0.0, 0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.3], #500-600
+      [0.0, 0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.3], #600-700
+      [0.0, 0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.3], #700-1000
+                            ]
+    xmin                 : 0
+    xmax                 : 2.3
+
+SetupBaseNN:
+    
+    model_name           : "TauJetTag"
+    n_batches            : -1
+    n_batches_val        : -1
+    n_batches_log        : 100
+    epoch                : 0
+    n_epochs             : 5
+    validation_split     : 0.2
+    max_queue_size       : 10
+    n_load_workers       : 6
+    learning_rate        : 0.001
+
+SetupSNN:
+
+    conv1D_params        : [50, 50]
+    conv_params          : [ # [dim, n_output]
+                              [2, 50],
+                              [2, 50],
+                              [2, 50],
+                              [2, 100],
+                              [2, 100],
+                              [2, 100],
+                              [2, 170],
+                              [2, 170],
+                              [2, 170],
+                           ]
+    dense_params         : [170, 170]
+    wiring_period        : 3
+    dropout_rate         : 0.1 
+    regu_rate            : 0
+
+SetupParticleNet:
+
+    conv_params          : [ #[K, [C1, C2, C3]]
+                              [16, [64,  64,  64]],
+                              [16, [128, 128, 128]],
+                              [16, [256, 256, 256]]
+                           ]
+    dense_params         : [256]
+    conv_pooling         : "average"
+    dropout_rate         : 0.1
+
+CellObjectType : [ PfCand, LostTrack, SecondaryVertex ] # All Cell Objects
+
+# Embedded Cell Objects:
+# For the features inside this group embedding will be used
+# Embedding parameters will be taken from the cooresponding feature list:
+# e.g: -> pfCand_particleType  : [ null, null, "categorical", 0, 8]
+# cooresponding embedding parameters: -> tf.keras.layers.Embedding(8,  2)
+# EmbeddedCellObjectType : [ PfCandCategorical ]
+
+SequenceLength:
+    PfCand : 50
+    LostTrack : 5
+    SecondaryVertex : 5
+
+Scaling_setup:
+    # --------------------------------------------------------
+    file_path: '/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-prelim/*.root' # input files to be used for computation of scaling params
+    output_json_folder: 'output_json' # directory where json files with scaling params will be stored
+    file_range: [0,20] # range of files in the sorted `file_path` to be processed, right endpoint excluded; -1 to run on all files from file_path
+    tree_name: taus # TTree name in input files to be read
+    log_step: 10 # will make a snapshot of scaling parameters per this number of input files
+    version: 'DisTauTag_v2' # string to be added to a json filename
+
+    # --------------------------------------------------------
+    # aliases for selection cuts
+    selection:
+      - &mpi -3.141592653589793
+      - &pi 3.141592653589793
+
+      - &jet_valid  'jet_index >= 0'
+
+      - &pf_valid '(jet_index >= 0) & (pfCand_index >= 0)'
+      # - &cut_pfCand_dxy         '(jet_index >= 0) & (pfCand_hasTrackDetails == 1) & (pfCand_dxy>-10000) & (pfCand_dxy<10000)'
+      # - &cut_pfCand_dxy_error   '(jet_index >= 0) & (pfCand_hasTrackDetails == 1) & (pfCand_dxy_error>-10000) & (pfCand_dxy_error<10000)'
+      # - &cut_pfCand_dz          '(jet_index >= 0) & (pfCand_hasTrackDetails == 1) & (pfCand_dz>-10000) & (pfCand_dz<10000)'
+      # - &cut_pfCand_dz_error    '(jet_index >= 0) & (pfCand_hasTrackDetails == 1) & (pfCand_dz_error>-10000) & (pfCand_dz_error<10000)'
+      # - &cut_pfCand_track_chi2  '(jet_index >= 0) & (pfCand_hasTrackDetails == 1) & (pfCand_track_chi2>-10000) & (pfCand_track_chi2<10000)'
+      # - &cut_pfCand_track_ndof  '(jet_index >= 0) & (pfCand_hasTrackDetails == 1) & (pfCand_track_ndof>-10000) & (pfCand_track_ndof<10000)'
+      - &pf_hasTrackDetails '(jet_index >= 0) & (pfCand_index >= 0) & (pfCand_hasTrackDetails == 1)'
+      - &pf_hasTrackDetails_track_ndof '(jet_index >= 0) & (pfCand_index >= 0) & (pfCand_hasTrackDetails == 1)  & (pfCand_track_ndof > 0)'
+
+      - &lt_valid '(jet_index >= 0) & (lostTrack_index >= 0)'
+      - &lt_hasTrackDetails '(jet_index >= 0) & (lostTrack_index >= 0) & (lostTrack_hasTrackDetails == 1)'
+      - &lt_hasTrackDetails_track_ndof '(jet_index >= 0) & (lostTrack_index >= 0) & (lostTrack_hasTrackDetails == 1)  & (lostTrack_track_ndof > 0)'
+
+        # parameters for inner/outer tau cones' definition
+    cone_definition:
+      null
+
+    cone_selection:
+
+      PfCand: 
+        var_names:
+          eta: pfCand_eta
+          phi: pfCand_phi
+        cone_types: [null]
+
+      LostTrack: 
+        var_names:
+          eta: lostTrack_eta
+          phi: lostTrack_phi
+        cone_types: [null]
+
+      SecondaryVertex: 
+        var_names:
+          eta: sv_pt
+          phi: sv_eta
+        cone_types: [null]
+
+Features_all :
+
+    PfCand :
+          - pfCand_valid                : [ *pf_valid, null, "categorical"]
+          - pfCand_pt                   : [ *pf_valid, null, "linear", 0.0, 100.0 ]
+          - pfCand_eta                  : [ *pf_valid, null, "linear", -3.0, 3.0 ]
+          - pfCand_phi                  : [ *pf_valid, null, "linear", *mpi, *pi ]
+          - pfCand_log_pt               : [ *pf_valid, {"pfCand_log_pt" : "log(pfCand_pt)"}, "linear", -4.0, 7.0 ]
+          - pfCand_log_E                : [ *pf_valid, {"pfCand_log_E" : "log(sqrt(pfCand_mass**2 + pfCand_pt**2 * cosh(pfCand_eta)**2))"}, "linear", -4.0, 7.0 ]
+
+          - pfCand_charge               : [ *pf_valid, null, "categorical" ]
+          - pfCand_puppiWeight          : [ *pf_valid, null, "no_scaling" ]
+          - pfCand_puppiWeightNoLep     : [ *pf_valid, null, "no_scaling" ]
+          - pfCand_lostInnerHits        : [ *pf_valid, null, "linear", -1, 5 ] # ???
+          - pfCand_nPixelHits           : [ *pf_valid, null, "linear", 0, 10 ]
+          - pfCand_nHits                : [ *pf_valid, null, "linear", 0, 30 ]
+
+          - pfCand_hasTrackDetails      : [ *pf_hasTrackDetails, null, "categorical" ]
+          - pfCand_dxy                  : [ *pf_hasTrackDetails, null, "normal", -5, 5 ]
+          - pfCand_dxy_sig              : [ *pf_hasTrackDetails, {"pfCand_dxy_sig": "pfCand_dxy/pfCand_dxy_error"}, "normal", -5, 5 ]
+          - pfCand_dz                   : [ *pf_hasTrackDetails, null, "normal", -5, 5 ]
+          - pfCand_dz_sig               : [ *pf_hasTrackDetails, {"pfCand_dz_sig": "pfCand_dz/pfCand_dz_error"}, "normal", -5, 5 ]
+          # - pfCand_track_chi2           : [ *cut_pfCand_track_chi2, null, "normal", -5, 5 ]
+          # - pfCand_track_ndof           : [ *cut_pfCand_track_ndof, null, "normal", -5, 5 ]
+          - pfCand_chi2_ndof            : [ *pf_hasTrackDetails_track_ndof, {"pfCand_chi2_ndof": "pfCand_track_chi2/pfCand_track_ndof"}, "normal", -5, 5]
+          - pfCand_ndof                 : [ *pf_hasTrackDetails_track_ndof, {"pfCand_ndof": "pfCand_track_ndof"}, "normal", -5, 5]
+
+          - pfCand_caloFraction         : [ *pf_valid, null, "linear", 0.0, 2.0 ]
+          - pfCand_hcalFraction         : [ *pf_valid, null, "linear", 0.0, 1.0 ]
+          - pfCand_rawCaloFraction      : [ *pf_valid, null, "linear", 0.0, 2.6 ]
+          - pfCand_rawHcalFraction      : [ *pf_valid, null, "linear", 0.0, 1.0 ]
+
+          - pfCand_particleType         : [ *pf_valid, null, "linear", 0.0, 9.0 ]
+          - pfCand_pvAssociationQuality : [ *pf_valid, null, "linear", 0.0, 9.0 ]
+          - pfCand_fromPV               : [ *pf_valid, null, "linear", 0.0, 5.0 ]
+
+          - pfCand_deta                 : [ *pf_valid, {"pfCand_ele_deta": "pfCand_eta - jet_eta"}, "no_scaling" ]
+          - pfCand_dphi                 : [ *pf_valid, {"pfCand_ele_dphi": "pfCand_phi - jet_phi"}, "no_scaling" ]
+
+    LostTrack:
+
+          - lostTrack_valid             : [ *lt_valid, null, "categorical"]
+          - lostTrack_pt                : [ *lt_valid, null, "linear", 0.0, 250.0 ]
+          - lostTrack_eta               : [ *lt_valid, null, "linear", -3.0, 3.0 ]
+          - lostTrack_phi               : [ *lt_valid, null, "linear", *mpi, *pi ]
+          - lostTrack_log_pt            : [ *lt_valid, {"lostTrack_log_pt" : "log(lostTrack_pt)"}, "linear", -4.0, 7.0 ]
+          - lostTrack_log_E             : [ *lt_valid, {"lostTrack_log_E" : "log(sqrt(lostTrack_mass**2 + lostTrack_pt**2 * cosh(lostTrack_eta)**2))"}, "linear", -4.0, 7.0 ]
+
+          - lostTrack_charge            : [ *lt_valid, null, "categorical" ]
+          - lostTrack_nPixelHits        : [ *lt_valid, null, "linear", 0, 10 ]
+          - lostTrack_nHits             : [ *lt_valid, null, "linear", 0, 30 ]
+
+          - lostTrack_hasTrackDetails   : [ *lt_hasTrackDetails, null, "categorical" ]
+          - lostTrack_dxy               : [ *lt_hasTrackDetails, null, "normal", -5, 5 ]
+          - lostTrack_dxy_sig           : [ *lt_hasTrackDetails, {"lostTrack_dxy_sig": "lostTrack_dxy/lostTrack_dxy_error"}, "normal", -5, 5 ]
+          - lostTrack_dz                : [ *lt_hasTrackDetails, null, "normal", -5, 5 ]
+          - lostTrack_dz_sig            : [ *lt_hasTrackDetails, {"lostTrack_dz_sig": "lostTrack_dz/lostTrack_dz_error"}, "normal", -5, 5 ]
+          - lostTrack_chi2_ndof         : [ *lt_hasTrackDetails_track_ndof, {"lostTrack_chi2_ndof": "lostTrack_track_chi2/lostTrack_track_ndof"}, "normal", -5, 5]
+          - lostTrack_ndof              : [ *lt_hasTrackDetails_track_ndof, {"lostTrack_ndof": "lostTrack_track_ndof"}, "normal", -5, 5]
+
+          - lostTrack_particleType         : [ *lt_valid, null, "linear", 0.0, 9.0 ]
+          - lostTrack_pvAssociationQuality : [ *lt_valid, null, "linear", 0.0, 9.0 ]
+          - lostTrack_fromPV               : [ *lt_valid, null, "linear", 0.0, 5.0 ]
+
+          - lostTrack_deta              : [ *lt_valid, {"lostTrack_deta": "lostTrack_eta - jet_eta"}, "no_scaling" ]
+          - lostTrack_dphi              : [ *lt_valid, {"lostTrack_dphi": "lostTrack_phi - jet_phi"}, "no_scaling" ]
+          
+
+    SecondaryVertex:
+
+          - sv_valid                    : [ *jet_valid, null, "categorical"]
+          - sv_pt                       : [ *jet_valid, null, "linear", 0.0, 200.0 ]
+          - sv_eta                      : [ *jet_valid, null, "linear", -3.0, 3.0 ]
+          - sv_phi                      : [ *jet_valid, null, "linear", *mpi, *pi ]
+          - sv_log_pt                   : [ *jet_valid, {"sv_log_pt" : "log(sv_pt)"}, "linear", -2.0, 7.0 ]
+          - sv_log_E                    : [ *jet_valid, {"sv_log_E" : "log(sqrt(sv_mass**2 + sv_pt**2 * cosh(sv_eta)**2))"}, "linear", -2.0, 7.0 ]
+
+          - sv_dx                       : [ *jet_valid, {"sv_dx": "sv_x - pv_x"}, "normal", -5, 5]
+          - sv_dy                       : [ *jet_valid, {"sv_dy": "sv_y - pv_y"}, "normal", -5, 5]
+          - sv_dz                       : [ *jet_valid, {"sv_dz": "sv_z - pv_z"}, "normal", -5, 5]
+          - sv_chi2_ndof                : [ *jet_valid, {"sv_chi2_ndof": "sv_chi2/sv_ndof"}, "normal", -5, 5]
+          - sv_ndof                     : [ *jet_valid, {"sv_ndof": "sv_ndof"}, "normal", -5, 5]
+
+          - sv_deta                     : [ *jet_valid, {"sv_eta": "sv_eta - jet_eta"}, "no_scaling" ]
+          - sv_dphi                     : [ *jet_valid, {"sv_phi": "sv_phi - jet_phi"}, "no_scaling" ]
+
+
+
+Features_disable :
+    PfCand : [ 
+    ]
+
+    LostTrack : [
+    ]
+
+    SecondaryVertex : [
+    ]

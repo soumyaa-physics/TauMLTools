@@ -11,15 +11,15 @@ from glob import glob
 # from tqdm import tqdm
 from collections import defaultdict
 
-if __name__ == "__main__":
-  file_dir = os.path.dirname(os.path.abspath(__file__))
-  base_dir = os.path.dirname(file_dir)
-  if base_dir not in sys.path:
-    sys.path.append(base_dir)
-  __package__ = file_dir
+# if __name__ == "__main__":
+#   file_dir = os.path.dirname(os.path.abspath(__file__))
+#   base_dir = os.path.dirname(file_dir)
+#   if base_dir not in sys.path:
+#     sys.path.append(base_dir)
+#   __package__ = file_dir
 
-from .scaling_utils import dR, dR_signal_cone, mask_inf, mask_nan, fill_aggregators, get_quantiles
-from .scaling_utils import init_dictionaries, dump_to_json
+from scaling_utils import dR, dR_signal_cone, mask_inf, mask_nan, fill_aggregators, get_quantiles
+from scaling_utils import init_dictionaries, dump_to_json
 
 def run_scaling(cfg, var_types, file_list=None, output_folder=None):
     with open(cfg) as f:

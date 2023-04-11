@@ -147,8 +147,7 @@ def test_input():
             hists_ditionary[0][celltype][feature].SetMinimum(0.0)
             hists_ditionary[0][celltype][feature].SetFillStyle(3353)
             hists_ditionary[0][celltype][feature].Draw("HIST")
-            # c.SaveAs("histograms/d_0"+celltype+"_"+feature+".png")
-            # c1 = R.TCanvas()
+
             hists_ditionary[1][celltype][feature].Scale(1/hists_ditionary[1][celltype][feature].Integral())
             hists_ditionary[1][celltype][feature].SetLineColor(R.kRed)
             hists_ditionary[1][celltype][feature].SetFillColor(R.kRed)

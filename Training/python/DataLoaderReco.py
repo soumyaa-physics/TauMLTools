@@ -66,22 +66,22 @@ class DataLoader (DataLoaderBase):
         # Computing additional variables: 
         self.config['input_map'] = {}
         self.config['n_features'] = {}
-        self.config['embedded_param'] = {}
+        # self.config['embedded_param'] = {}
 
         for pfCand_type in self.config["Features_all"]:
             self.config['input_map'][pfCand_type] = {}
             self.config['n_features'][pfCand_type] = \
                 len(self.config["Features_all"][pfCand_type]) - \
                 len(self.config["Features_disable"][pfCand_type])
-            if pfCand_type in self.config["EmbeddedCellObjectType"]:
-                self.config['embedded_param'][pfCand_type] = {}
+            # if pfCand_type in self.config["EmbeddedCellObjectType"]:
+            #     self.config['embedded_param'][pfCand_type] = {}
             for f_dict in self.config["Features_all"][pfCand_type]:
                 f = next(iter(f_dict))
                 if f not in self.config["Features_disable"][pfCand_type]:
                     self.config['input_map'][pfCand_type][f] = \
                         getattr(getattr(R,pfCand_type+"_Features"),f)
-                if pfCand_type in self.config["EmbeddedCellObjectType"]:
-                    self.config['embedded_param'][pfCand_type][f] = f_dict[f][-2:]
+                # if pfCand_type in self.config["EmbeddedCellObjectType"]:
+                #     self.config['embedded_param'][pfCand_type][f] = f_dict[f][-2:]
 
         self.train_files, self.val_files = \
             np.split(data_files, [int(len(data_files)*(1-self.config["SetupBaseNN"]["validation_split"]))])

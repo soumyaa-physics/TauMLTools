@@ -1,0 +1,6 @@
+python Training_DisTauTag_ParticleNetv2.py experiment_name=hypertune_v2 'training_cfg.Setup.train_with_weights=True' 'training_cfg.SetupBaseNN.model_name=ParticleNet_v2_weight'
+python Training_DisTauTag_ParticleNetv2.py experiment_name=hypertune_v2 'training_cfg.Setup.train_with_weights=False' 'training_cfg.SetupBaseNN.model_name=ParticleNet_v2_noweight'
+python Training_DisTauTag_ParticleNetv2.py experiment_name=hypertune_v2 'training_cfg.Setup.train_with_weights=False' 'training_cfg.SetupParticleNet.use_input_grids=[PfCand]' 'training_cfg.SetupBaseNN.model_name=ParticleNet_v2_pf'
+python Training_DisTauTag_ParticleNetv2.py experiment_name=hypertune_v2 'training_cfg.Setup.train_with_weights=False' 'training_cfg.SetupParticleNet.use_input_grids=[PfCand,LostTrack]' 'training_cfg.SetupBaseNN.model_name=ParticleNet_v2_pf_tracks'
+python Training_DisTauTag_ParticleNetv2.py experiment_name=hypertune_v2 'training_cfg.Setup.train_with_weights=False' 'training_cfg.SetupParticleNet.use_input_grids=[PfCand,LostTrack,SecondaryVertex]' 'training_cfg.SetupBaseNN.model_name=ParticleNet_v2_pf_tracks_sv'
+

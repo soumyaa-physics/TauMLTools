@@ -145,6 +145,81 @@ class EdgeConv(tf.keras.layers.Layer):
             else:
                 return sc + fts
 
+class ParticleCloudPreprocess(Model):
+    def __init__(self, output_filters=30, input_features=[10,10,10], hidden_layers=1,
+                 activation='relu', mode="pad_conv", **kwargs):
+        super().__init__(**kwargs)  # Fixed the super call
+        
+        self.preprocess_layers = [[] for _ in range(len(input_features))]
+        print("Preprocess mode: ", mode)
+        self.mode = mode
+        self.input_features = input_features
+        if mode == "type_conv":
+            for input_i, features in enumerate( input_features ):
+                hidden_layer_neurons = int( (output_filters + features)/2 )
+                if hidden_layers > 0:
+                    for _ in range(hidden_layers):
+                        self.preprocess_layers[input_i].append(
+                                TimeDistributed(Dense(hidden_layer_neurons, activation=activation))
+                            )
+                self.preprocess_layers[input_i].append(
+                        TimeDistributed(Dense(output_filters, activation=activation))
+                    )
+        if mode == "pad_conv":
+            self.paddings = []
+            for input_i, features in enumerate( input_features ):
+                self.paddings.append( [[0, 0],
+                                       [0, 0],
+                                       [sum(self.input_features[:input_i]), sum(self.input_features[input_i+1:])]
+                                      ])
+                
+                if hidden_layers > 0:
+                    for _ in range(hidden_layers):
+                        hidden_layer_neurons = int( (sum(output_filters) + features)/2 )
+                        self.preprocess_layers[input_i].append(
+                                TimeDistributed(Dense(hidden_layer_neurons, activation=activation))
+                            )
+                self.preprocess_layers[input_i].append(
+                        TimeDistributed(Dense(output_filters, activation=activation))
+                    )
+                
+    @tf.function
+    def call(self, inputs):
+        
+        if self.mode == "type_conv":
+            outputs = [ ]
+            for input_i, _ in enumerate( self.input_features ):
+                _valid = inputs[input_i][:,:, :1]
+                _coord = inputs[input_i][:,:, -2:]
+                _input = inputs[input_i]
+                for layer in self.preprocess_layers[input_i]:
+                    _input = layer(_input)
+                # Add the first feature of each input to the output and the last two coords
+                _input = tf.concat([_valid, _input, _coord], axis=2)    
+                outputs.append(_input)
+            _input = tf.concat(outputs, axis=1)
+          
+        elif self.mode == "pad_conv":
+            outputs = [ ]
+            _valids = []
+            _coords = []
+            for input_i, _ in enumerate( self.input_features ):
+                _valids.append(inputs[input_i][:,:, :1])
+                _coords.append(inputs[input_i][:,:, -2:])
+                _input = inputs[input_i]
+                _input = tf.pad(_input, paddings=self.paddings[input_i])
+                outputs.append(_input)
+            _input = tf.concat(outputs, axis=1)
+            _valid = tf.concat(_valids, axis=1)
+            _coord = tf.concat(_coords, axis=1)
+            for layer in self.preprocess_layers[input_i]:
+                _input = layer(_input)
+            # Add the valid and coords to the output
+            _input = tf.concat([_valid, _input, _coord],axis=2) 
+                
+        return _input 
+
+
 class ParticleNet(tf.keras.Model):
 
     # points : (N, P, C_coord)
@@ -172,10 +247,21 @@ class ParticleNet(tf.keras.Model):
         for layer_setup in cfg["SetupParticleNet"]["dense_params"]:
             self.setting.fc_params.append((layer_setup, cfg["SetupParticleNet"]["dropout_rate"],))
 
-        # assert(cfg["SequenceLength"]["PfCand"]==cfg["SequenceLength"]["PfCandCategorical"])
-        self.setting.num_points = cfg["SequenceLength"]["PfCand"]
-
-        self.map_features = cfg["input_map"]["PfCand"]
+        self.num_features = []
+        self.input_grids = []
+        self.setting.num_points = 0
+        for index_grid, comp in enumerate(cfg["CellObjectType"]):
+            if not comp in cfg["SetupParticleNet"]["use_input_grids"]:
+                continue
+            self.input_grids.append(index_grid)
+            self.setting.num_points += cfg["SequenceLength"][comp]
+            self.num_features.append(cfg['n_features'][comp])
+            
+        self.preprocess = ParticleCloudPreprocess(output_filters=cfg["SetupParticleNet"]["preprocess_out"],
+                                                  input_features=self.num_features,
+                                                  mode=cfg["SetupParticleNet"]["preprocess_mode"],
+                                                  hidden_layers=cfg["SetupParticleNet"]["preprocess_hidden_l"])
+            
         self.name_ = name
 
         self.batch_norm = keras.layers.BatchNormalization(name='%s_fts_bn' % self.name_)
@@ -201,18 +287,17 @@ class ParticleNet(tf.keras.Model):
             self.out = keras.layers.Dense(self.setting.num_class, activation='softmax')
 
 
-
     @tf.function
     def call(self, input_):
 
-        xx = input_[0]
-        xx_mask = tf.expand_dims(xx[:,:,self.map_features['pfCand_valid']],-1)
+        input_ = [ input_[i] for i in self.input_grids ]
+        xx = self.preprocess(input_)
+        
+        xx_mask = xx[:,:,:1]
         xx_coord = xx[:,:,-2:]
         
-        # xx_cat = input_[1]
-        # xx_ftr = tf.concat((xx_cat, xx),axis = 2)    
         xx_ftr = xx
-
+    
         with tf.name_scope(self.name):
 
             mask = tf.cast(tf.not_equal(xx_mask, 0), dtype='float32')  # 1 if valid
@@ -256,9 +341,9 @@ def compile_model(model, learning_rate):
 
 def run_training(model, data_loader, to_profile, log_suffix):
 
-    gen_train = data_loader.get_generator(primary_set = True)
-    gen_val = data_loader.get_generator(primary_set = False)
-    input_shape, input_types = data_loader.get_shape()
+    gen_train = data_loader.get_generator(primary_set = True, return_weights = data_loader.config["Setup"]["train_with_weights"])
+    gen_val = data_loader.get_generator(primary_set = False, return_weights = data_loader.config["Setup"]["train_with_weights"])
+    input_shape, input_types = data_loader.get_shape(return_weights = data_loader.config["Setup"]["train_with_weights"])
 
     data_train = tf.data.Dataset.from_generator(
         gen_train, output_types = input_types, output_shapes = input_shape

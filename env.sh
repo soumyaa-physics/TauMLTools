@@ -111,8 +111,10 @@ action() {
   fi
 
   if [[ $MODE == *"conda"* ]]; then
-    local CONDA=$(which conda 2>/dev/null)
+    # local CONDA=$(which conda 2>/dev/null)
+    local CONDA=$(echo $CONDA_EXE)
     if [[ $CONDA = "" || $CONDA = "/usr/bin/conda" ]]; then
+      echo "Use conda"
       local PRIVATE_CONDA_INSTALL_DEFAULT="$ANALYSIS_PATH/soft/conda"
       local PRIVATE_CONDA_INSTALL="$PRIVATE_CONDA_INSTALL_DEFAULT"
       if [ -f "$PRIVATE_CONDA_INSTALL_DEFAULT.ref" ]; then

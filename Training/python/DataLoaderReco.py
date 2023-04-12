@@ -210,7 +210,7 @@ class DataLoader (DataLoaderBase):
         return _generator
 
 
-    def get_shape(self):
+    def get_shape(self, return_weights = True):
 
         input_shape, input_types = [], []
         for comp in self.config["CellObjectType"]:
@@ -223,5 +223,9 @@ class DataLoader (DataLoaderBase):
                             self.config["Setup"]["output_classes"]))
         input_types = [tuple(input_types)]
         input_types.append(tf.float32)
+        
+        if return_weights:
+            input_shape.append((None,))
+            input_types.append(tf.float32)
 
         return tuple(input_shape), tuple(input_types)

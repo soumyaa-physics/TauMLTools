@@ -19,24 +19,26 @@ class Training(Task, HTCondorWorkflow, law.LocalWorkflow):
     cuda_memory  = luigi.Parameter(default = 10000, significant = False, description = 'Required CUDA Global Memory (in Mb).')
     input_cmds   = luigi.Parameter(description = 'Path to the txt file with input commands.')
 
-
     comp_facility = luigi.Parameter(default = 'desy-naf',
                         description = 'Computing facility for specific setups e.g: desy-naf, lxplus')
 
     def htcondor_job_config(self, config, job_num, branches):
-        main_dir = os.getenv("ANALYSIS_PATH")
-        report_dir = str(self.htcondor_output_directory().path)
+        
+        super().htcondor_job_config(config, job_num, branches)
+        
+        # main_dir = os.getenv("ANALYSIS_PATH")
+        # report_dir = str(self.htcondor_output_directory().path)
 
-        err_dir = '/'.join([report_dir, 'errors'])
-        out_dir = '/'.join([report_dir, 'outputs'])
-        log_dir = '/'.join([report_dir, 'logs'])
+        # err_dir = '/'.join([report_dir, 'errors'])
+        # out_dir = '/'.join([report_dir, 'outputs'])
+        # log_dir = '/'.join([report_dir, 'logs'])
 
-        if not os.path.exists(err_dir): os.makedirs(err_dir)
-        if not os.path.exists(out_dir): os.makedirs(out_dir)
-        if not os.path.exists(log_dir): os.makedirs(log_dir)
+        # if not os.path.exists(err_dir): os.makedirs(err_dir)
+        # if not os.path.exists(out_dir): os.makedirs(out_dir)
+        # if not os.path.exists(log_dir): os.makedirs(log_dir)
 
         # render_variables are rendered into all files sent with a job
-        config.render_variables["analysis_path"] = main_dir
+        # config.render_variables["analysis_path"] = main_dir
 
         if bool(self.enable_gpu):
             config.custom_content.append('Request_GPUs = 1')
@@ -54,12 +56,12 @@ class Training(Task, HTCondorWorkflow, law.LocalWorkflow):
         else:
             raise Exception('no specific setups for {self.comp_facility} computing facility')
 
-        config.custom_content.append(("getenv", "true"))
-        config.custom_content.append(('JobBatchName'  , self.batch_name))
+        # config.custom_content.append(("getenv", "true"))
+        # config.custom_content.append(('JobBatchName'  , self.batch_name))
 
-        config.custom_content.append(("error" , '/'.join([err_dir, 'err_{}.txt'.format(job_num)])))
-        config.custom_content.append(("output", '/'.join([out_dir, 'out_{}.txt'.format(job_num)])))
-        config.custom_content.append(("log"   , '/'.join([log_dir, 'log_{}.txt'.format(job_num)])))
+        # config.custom_content.append(("error" , '/'.join([err_dir, 'err_{}.txt'.format(job_num)])))
+        # config.custom_content.append(("output", '/'.join([out_dir, 'out_{}.txt'.format(job_num)])))
+        # config.custom_content.append(("log"   , '/'.join([log_dir, 'log_{}.txt'.format(job_num)])))
 
         return config
 

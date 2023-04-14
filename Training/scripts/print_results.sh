@@ -19,7 +19,7 @@ for PATH_GLOB in ${DIRS[@]}; do
     RUN_ID=`echo $RUN_ID_PATH |  sed 's|.*/||'`
     NAME=`cat ${RUN_ID_PATH}/artifacts/model_summary.txt | grep 'Model:'`
     TP=`cat ${RUN_ID_PATH}/artifacts/model_summary.txt | grep 'Trainable params:'`
-    LOSE=`cat ${RUN_ID_PATH}/metrics/weighted_tau_crossentropy_v2 | awk '{ print $2 }'`
-    LOSE_VAL=`cat ${RUN_ID_PATH}/metrics/val_weighted_tau_crossentropy_v2 | awk '{ print $2 }'`
+    LOSE=`tail -1 ${RUN_ID_PATH}/metrics/loss | awk '{ print $2 }'`
+    LOSE_VAL=`tail -1 ${RUN_ID_PATH}/metrics/val_loss | awk '{ print $2 }'`
     echo RunID: $RUN_ID $NAME $TP loss: $LOSE val_loss: $LOSE_VAL
 done

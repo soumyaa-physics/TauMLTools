@@ -19,7 +19,8 @@ for PATH_GLOB in ${DIRS[@]}; do
     NAME=`cat ${PATH_GLOB}/model_summary.txt | awk '$1=="Model:"{print $2}'`
     echo $NAME " - added"
     CMD+="${NAME}_train:${PATH_GLOB}/tensorboard_logs/train,"
-    CMD+="${NAME}_val:${PATH_GLOB}/tensorboard_logs/val,"
+    CMD+="${NAME}_validation:${PATH_GLOB}/tensorboard_logs/validation,"
+    CMD+="${NAME}_steps:${PATH_GLOB}/tensorboard_logs/steps,"
 done
 
 CMD=`echo $CMD | head -c -2`

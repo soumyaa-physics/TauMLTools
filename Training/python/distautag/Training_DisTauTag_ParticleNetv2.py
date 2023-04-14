@@ -145,7 +145,7 @@ class EdgeConv(tf.keras.layers.Layer):
             else:
                 return sc + fts
 
-class ParticleCloudPreprocess(Model):
+class ParticleCloudPreprocess(tf.keras.layers.Layer):
     def __init__(self, output_filters=30, input_features=[10,10,10], hidden_layers=1,
                  activation='relu', mode="pad_conv", **kwargs):
         super().__init__(**kwargs)  # Fixed the super call
@@ -172,17 +172,16 @@ class ParticleCloudPreprocess(Model):
                                        [0, 0],
                                        [sum(self.input_features[:input_i]), sum(self.input_features[input_i+1:])]
                                       ])
-                
-                if hidden_layers > 0:
-                    for _ in range(hidden_layers):
-                        hidden_layer_neurons = int( (sum(output_filters) + features)/2 )
-                        self.preprocess_layers[input_i].append(
-                                TimeDistributed(Dense(hidden_layer_neurons, activation=activation))
-                            )
-                self.preprocess_layers[input_i].append(
-                        TimeDistributed(Dense(output_filters, activation=activation))
-                    )
-                
+            if hidden_layers > 0:
+                for _ in range(hidden_layers):
+                    hidden_layer_neurons = int( (output_filters + sum(input_features)/2 ) )
+                    self.preprocess_layers[input_i].append(
+                            TimeDistributed(Dense(hidden_layer_neurons, activation=activation))
+                        )
+            self.preprocess_layers[input_i].append(
+                    TimeDistributed(Dense(output_filters, activation=activation))
+                )
+
     @tf.function
     def call(self, inputs):
         

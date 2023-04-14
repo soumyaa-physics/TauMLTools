@@ -87,10 +87,10 @@ SetupSNN:
 
 SetupParticleNet:
 
-    use_input_grids      : [ PfCand ]
+    use_input_grids      : [  PfCand, LostTrack, SecondaryVertex  ]
 
     # preprocessing is in the form of reduction rate
-    preprocess_mode      : "type_conv"
+    preprocess_mode      : "pad_conv"
     preprocess_hidden_l  : 2
     preprocess_out       : 30
 

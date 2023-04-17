@@ -14,6 +14,8 @@ Setup:
     weight_thr           : 1000
     train_with_weights   : True
     include_mismatched   : False
+    prop_y_glob          : True
+    n_globals            : 5
 
     # here define variables for the Histogram_2D class
     yaxis                : [
@@ -106,6 +108,14 @@ SetupParticleNet:
     dropout_rate         : 0.1
 
 CellObjectType : [ PfCand, LostTrack, SecondaryVertex ] # All Cell Objects
+
+GlobalVariables : [
+    "jet_pt",
+    "jet_eta",
+    "Lxy",
+    "Lz",
+    "Lrel"
+  ]
 
 # Embedded Cell Objects:
 # For the features inside this group embedding will be used

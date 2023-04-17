@@ -55,6 +55,22 @@ public:
     std::set<const GenParticle*> daughters;
 
     PdgId pdgCode() const { return static_cast<PdgId>(std::abs(pdgId)); }
+
+    // get the displacement of tau wrt to the mother vertex
+    const double getDisplacement() const {
+        auto vertex_2 = getFirstMother(this->pdgId, this)->vertex;
+        return std::sqrt(std::pow(vertex.X()-vertex_2.X(),2)
+                       + std::pow(vertex.Y()-vertex_2.Y(),2)
+                       + std::pow(vertex.Z()-vertex_2.Z(),2));
+    }
+
+    const GenParticle* getFirstMother(int last_pdgId, const GenParticle* daughter) const {
+        if (daughter->mothers.empty())
+            throw std::runtime_error("GenLepton.h: can not find displacement of the particle. std::set mothers is empty");
+        if( last_pdgId != (*daughter->mothers.begin())->pdgId ) return *daughter->mothers.begin();
+        else return getFirstMother(last_pdgId, *daughter->mothers.begin());
+
+    }
 };
 
 inline std::ostream& operator<<(std::ostream& os, const GenParticle& p)

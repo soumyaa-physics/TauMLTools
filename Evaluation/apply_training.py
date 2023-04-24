@@ -5,6 +5,7 @@ import git
 import glob
 from tqdm import tqdm
 from shutil import rmtree
+import importlib
 
 import uproot
 import numpy as np
@@ -33,7 +34,8 @@ def main(cfg: DictConfig) -> None:
     with open(to_absolute_path(f'{path_to_artifacts}/input_cfg/metric_names.json')) as f:
         metric_names = json.load(f)
     path_to_model = f'{path_to_artifacts}/model'
-    model = load_model(path_to_model, {name: lambda _: None for name in metric_names.keys()}) # workaround to load the model without loading metric functions
+    # model = load_model(path_to_model, {name: lambda _: None for name in metric_names.keys()}) # workaround to load the model without loading metric functions
+    model = load_model(path_to_model)
 
     # load baseline training cfg and update it with parsed arguments
     training_cfg = OmegaConf.load(to_absolute_path(cfg.path_to_training_cfg))
@@ -55,11 +57,12 @@ def main(cfg: DictConfig) -> None:
             if cfg.verbose: print('\n--> Didn\'t find git commit hash in run artifacts, continuing with current repo state\n')
 
     # instantiate DataLoader and get generator
-    import DataLoader
+    DataLoader = importlib.import_module(cfg.dataloader_module)
     scaling_cfg  = to_absolute_path(cfg.scaling_cfg)
     dataloader = DataLoader.DataLoader(training_cfg, scaling_cfg)
     gen_predict = dataloader.get_predict_generator()
     tau_types_names = training_cfg['Setup']['tau_types_names']
+    prop_y_glob = training_cfg['Setup']['prop_y_glob']
 
     pathes = glob.glob(to_absolute_path(cfg.path_to_input_dir)+'/*root') if cfg.input_filename is None \
              else [to_absolute_path(f'{cfg.path_to_input_dir}/{cfg.input_filename}.root')]
@@ -92,10 +95,19 @@ def main(cfg: DictConfig) -> None:
         # run predictions
         predictions = []
         targets = []
+        global_vars = []
         if cfg.verbose: print(f'\n\n--> Processing file {input_file_name}, number of taus: {n_taus}\n')
         with tqdm(total=n_taus) as pbar:
 
-            for (X,y),indexes,size in gen_predict(input_file_name):
+            for gen_return in gen_predict(input_file_name):
+                
+                if prop_y_glob:
+                    (X,y), y_glob, indexes,size = gen_return
+                    y_global = np.zeros((size, y_glob.shape[1]))
+                    y_global[indexes] = y_glob
+                    global_vars.append(y_global)
+                else:
+                    (X,y), indexes,size = gen_return
 
                 y_pred = np.zeros((size, y.shape[1]))
                 y_target = np.zeros((size, y.shape[1]))
@@ -135,6 +147,15 @@ def main(cfg: DictConfig) -> None:
         targets = pd.DataFrame({f'node_{tau_type}': targets[:, int(idx)] for idx, tau_type in tau_types_names.items()}, dtype=np.int64)
         predictions.to_hdf(f'{output_filename}.h5', key='predictions', mode='w', format='fixed', complevel=1, complib='zlib')
         targets.to_hdf(f'{output_filename}.h5', key='targets', mode='r+', format='fixed', complevel=1, complib='zlib')
+
+        if prop_y_glob:
+            global_vars = np.concatenate(global_vars, axis=0)
+            if np.any(np.isnan(global_vars)):
+                raise RuntimeError("NaN in global_vars")
+            glob_names = dataloader.config["GlobalVariables"]
+            global_vars = pd.DataFrame({f'{var}': global_vars[:, int(idx)] for idx, var in enumerate(glob_names)})
+            global_vars.to_hdf(f'{output_filename}.h5', key='global_vars', mode='r+', format='fixed', complevel=1, complib='zlib')
+            
 
         # store DeepTau IDs:
         if cfg.toKeepID:

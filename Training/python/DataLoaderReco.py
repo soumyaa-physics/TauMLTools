@@ -63,6 +63,7 @@ class DataLoader (DataLoaderBase):
         data_files = glob.glob(f'{config["Setup"]["input_dir"]}/*.root')
         self.compile_classes(config, file_scaling, dataloader_core, data_files)
 
+        self.input_type = self.config["Setup"]["input_type"]
         # Computing additional variables: 
         self.config['input_map'] = {}
         self.config['n_features'] = {}
@@ -120,13 +121,13 @@ class DataLoader (DataLoaderBase):
                 uncompress_index = np.copy(np.frombuffer(data.uncompress_index.data(),
                                                          dtype=np.int,
                                                          count=data.uncompress_index.size()))
-                if(self.config["Setup"]["to_propagate_glob"]==True):
+                if self.config["Setup"]["prop_y_glob"]:
                     # Needed to propagate global variables from DataLoader to the apply_training
-                    x_glob = GetData.getdata(data.x_glob, data.tau_i,
+                    y_global = GetData.getdata(data.y_global, data.tau_i,
                                     (self.config["Setup"]["n_tau"],
-                                     self.config['n_features']["Global"]),
+                                    len(self.config['GlobalVariables'])),
                                     debug_area="global")
-                    yield converter((tuple(x), y)), x_glob.clone().numpy(), uncompress_index[:data.tau_i], data.uncompress_size
+                    yield converter((tuple(x), y)), y_global.clone().numpy(), uncompress_index[:data.tau_i], data.uncompress_size
                 else:
                     yield converter((tuple(x), y)), uncompress_index[:data.tau_i], data.uncompress_size
                 if full_tensor==False: break

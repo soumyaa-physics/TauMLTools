@@ -8,14 +8,15 @@ Setup:
     input_dir            : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-prelim/"
     spectrum_to_reweight : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-prelim-spectrum/new-ntuples-tau-pog-v4-prelim.root"
     dataloader_core      : "TauMLTools/Training/interface/DataLoaderDisTauTag_v2_main.h"
-    jet_types_names      : { "0":"jet", "1":"tau",  }
+    tau_types_names      : { "0":"jet", "1":"tau",  }
     output_classes       : 2 #number of elements in jet_types_names
     recompute_jet_type   : True
     weight_thr           : 1000
     train_with_weights   : True
     include_mismatched   : False
-    prop_y_glob          : True
+    prop_y_glob          : False
     n_globals            : 5
+    input_type           : "ROOT"
 
     # here define variables for the Histogram_2D class
     yaxis                : [

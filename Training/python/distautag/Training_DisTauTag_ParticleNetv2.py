@@ -334,8 +334,8 @@ def compile_model(model, learning_rate):
     model.compile(loss='binary_crossentropy', optimizer=opt, metrics=metrics)
 
     # log metric names for passing them during model loading
-    # metric_names = {(m if isinstance(m, str) else m.__name__): '' for m in metrics}
-    # mlflow.log_dict(metric_names, 'input_cfg/metric_names.json')
+    metric_names = {(m if isinstance(m, str) else m.__class__.__name__): '' for m in metrics}
+    mlflow.log_dict(metric_names, 'input_cfg/metric_names.json')
 
 
 def run_training(model, data_loader, to_profile, log_suffix):

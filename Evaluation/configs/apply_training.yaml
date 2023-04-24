@@ -2,9 +2,15 @@
 training_cfg_upd:
   Setup:
     n_tau: 250
-    dataloader_core: "TauMLTools/Training/interface/DataLoader_main.h"
+    dataloader_core: "TauMLTools/Training/interface/DataLoaderDisTauTag_v2_main.h"
     debug: False
-    include_mismatched: True
+    recompute_jet_type   : True
+    prop_y_glob          : True # This probagate Glob features (needed for evaluation)
+    include_mismatched   : False # whether to keep tau candidates with tau_type not present in `tau_types_names`
+    tau_types_names      : { "0":"jet", "1":"tau",  }
+    n_globals            : 5
+    input_type           : "ROOT"
+
   SetupNN:
     n_batches: -1
     n_batches_val: -1
@@ -12,6 +18,15 @@ training_cfg_upd:
     max_queue_size: 1
     n_load_workers: 1
 
+  GlobalVariables : [
+    "jet_pt",
+    "jet_eta",
+    "Lxy",
+    "Lz",
+    "Lrel"
+  ]
+
+dataloader_module: DataLoaderReco
 
 # mlflow info
 path_to_mlflow: ???
@@ -20,7 +35,7 @@ run_id: ???
 
 # training/scaling cfg to init DataLoader class
 path_to_training_cfg: ${path_to_mlflow}/${experiment_id}/${run_id}/artifacts/input_cfg/training_cfg.yaml
-scaling_cfg: ${path_to_mlflow}/${experiment_id}/${run_id}/artifacts/input_cfg/ShuffleMergeSpectral_trainingSamples-2_files_0_498.json
+scaling_cfg: ${path_to_mlflow}/${experiment_id}/${run_id}/artifacts/input_cfg/scaling_params_vDisTauTag_v2.json
 
 # input path and file name
 path_to_input_dir: ???

@@ -72,7 +72,7 @@ public:
         std::shared_ptr<TH2D> target_th2d = std::shared_ptr<TH2D>(dynamic_cast<TH2D*>(file_target->Get("jet_eta_pt_hist_tau")));
         if (!target_th2d) throw std::runtime_error("Target histogram could not be loaded");
 
-        for( auto const& [tau_type, tau_name] : Setup::jet_types_names)
+        for( auto const& [tau_type, tau_name] : Setup::tau_types_names)
         {
             std::shared_ptr<TH2D> input_th2d  = std::shared_ptr<TH2D>(dynamic_cast<TH2D*>(file_input ->Get(("jet_eta_pt_hist_"+tau_name).c_str())));
             if (!input_th2d) throw std::runtime_error("Input histogram could not be loaded for jet type "+tau_name);

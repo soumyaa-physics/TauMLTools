@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from collections import defaultdict
 from dataclasses import fields
+import itertools
 
 import mlflow
 import hydra
@@ -12,7 +13,7 @@ from omegaconf import OmegaConf, DictConfig
 
 import utils.evaluation as eval_tools
 
-@hydra.main(config_path='configs/eval', config_name='run3')
+@hydra.main(config_path='configs/eval', config_name='distautag')
 def main(cfg: DictConfig) -> None:
     mlflow.set_tracking_uri(f"file://{to_absolute_path(cfg.path_to_mlflow)}")
 
@@ -47,23 +48,27 @@ def main(cfg: DictConfig) -> None:
                 input_branches.append(cfg['discriminator']['wp_column_prefix'] + tau_type)
         else: # append only wp_column branch for binary WP model
             input_branches.append(discriminator.wp_column)
-
+    if "global_branches" not in cfg:
+        cfg["global_branches"] = None
+        
     # loop over input samples
     df_list = []
     print()
     for sample_alias, tau_types in cfg.input_samples.items():
         input_files, pred_files, target_files = eval_tools.prepare_filelists(sample_alias, cfg.path_to_input, cfg.path_to_pred, cfg.path_to_target, path_to_artifacts)
-
         # loop over all input files per sample with associated predictions/targets (if present) and combine together into df
         print(f'[INFO] Creating dataframe for sample: {sample_alias}')
         for input_file, pred_file, target_file in zip(input_files, pred_files, target_files):
             df = eval_tools.create_df(input_file, input_branches, pred_file, target_file, None, # weights functionality is WIP
-                                            cfg.discriminator.pred_column_prefix, cfg.discriminator.target_column_prefix)
+                                            cfg.discriminator.pred_column_prefix, cfg.discriminator.target_column_prefix, cfg.global_branches)
             gen_selection = ' or '.join([f'(gen_{tau_type}==1)' for tau_type in tau_types]) # gen_* are constructed in `add_targets()`
             df = df.query(gen_selection)
             df_list.append(df)
     df_all = pd.concat(df_list)
-
+    print(f'[INFO] Total number of events: {len(df_all)}')
+    # print(df_all[df_all.gen_tau==1].head(20))
+    # print(df_all[df_all.gen_tau==0].head(20))
+    # exit()
     # apply selection
     if cfg['cuts'] is not None:
         df_all = df_all.query(cfg.cuts)
@@ -91,23 +96,41 @@ def main(cfg: DictConfig) -> None:
     # dump curves' data into json file
     json_exists = os.path.exists(output_json_path)
     json_open_mode = 'r+' if json_exists else 'w'
+    json_exists = None
+    json_open_mode = "w"
     with open(output_json_path, json_open_mode) as json_file:
         if json_exists: # read performance data to append additional info 
             performance_data = json.load(json_file)
         else: # create dictionary to fill with data
             performance_data = {'name': discriminator.name, 'metrics': defaultdict(list)}
+        roc_curve_bins = cfg.bins
+
+        var_values = list(roc_curve_bins.values())
+        var_names = list(roc_curve_bins.keys())
+        var_values = list(itertools.product(*var_values))
+        print('[INFO] bining variables:', var_names)
+        print('[INFO] bining values:', var_values)
+        
+        bins_combinations = []
+        for single_bin_value in var_values:
+            single_bin = {}
+            for var_name in var_names:
+                single_bin[var_name] = single_bin_value[var_names.index(var_name)]
+            bins_combinations.append(single_bin)
 
         # loop over pt bins
         print(f'\n{discriminator.name}')
-        for dm_bin in cfg.dm_bins:
-         for eta_index, (eta_min, eta_max) in enumerate(cfg.eta_bins):
-          for pt_index, (pt_min, pt_max) in enumerate(cfg.pt_bins):
-            # apply pt/eta/dm bin selection
-            df_cut = df_all.query(f'tau_pt >= {pt_min} and tau_pt < {pt_max} and abs(tau_eta) >= {eta_min} and abs(tau_eta) < {eta_max} and tau_decayMode in {dm_bin}')
+        for bin_ in bins_combinations:
+            # query = " and ".join([f'({key}>={value[0]} and {key}<{value[1]})' for key, value in bin_.items()])
+            query = " and ".join([f'(({key}>={value[0]} and {key}<{value[1]}) or {key}==-999)' for key, value in bin_.items()])
+            query_info = [[f'{key}_min',value[0]] for key, value in bin_.items()] \
+                       + [[f'{key}_max',value[1]] for key, value in bin_.items()]
+            query_info = dict(query_info)
+            print("[INFO] processing bin:", query)
+            df_cut = df_all.query(query)
             if df_cut.shape[0] == 0:
-                print("Warning: bin with pt ({}, {}) and eta ({}, {}) and DMs {} is empty.".format(pt_min, pt_max, eta_min, eta_max, dm_bin))
+                print("Warning: bin {} is empty.".format(query))
                 continue
-            print(f'\n-----> pt bin: [{pt_min}, {pt_max}], eta bin: [{eta_min}, {eta_max}], DM bin: {dm_bin}')
             print('[INFO] counts:\n', df_cut[['gen_tau', f'gen_{cfg.vs_type}']].value_counts())
 
             # create roc curve and working points
@@ -122,16 +145,14 @@ def main(cfg: DictConfig) -> None:
             for curve_type, curve in zip(['roc_curve', 'roc_wp'], [roc, wp_roc]):
                 if curve is None: continue
                 if json_exists and curve_type in performance_data['metrics'] \
-                                and (existing_curve := eval_tools.select_curve(performance_data['metrics'][curve_type], 
-                                                                                pt_min=pt_min, pt_max=pt_max, eta_min=eta_min, eta_max=eta_max, dm_bin=dm_bin, vs_type=cfg.vs_type,
+                                and (existing_curve := eval_tools.select_curve(performance_data['metrics'][curve_type], **query_info,
+                                                                                vs_type=cfg.vs_type,
                                                                                 dataset_alias=cfg.dataset_alias)) is not None:
                     print(f'[INFO] Found already existing curve (type: {curve_type}) in json file for a specified set of parameters: will overwrite it.')
                     performance_data['metrics'][curve_type].remove(existing_curve)
 
                 curve_data = {
-                    'pt_min': pt_min, 'pt_max': pt_max, 
-                    'eta_min': eta_min, 'eta_max': eta_max, 
-                    'dm_bin': list(dm_bin), 
+                    **query_info, 
                     'vs_type': cfg.vs_type,
                     'dataset_alias': cfg.dataset_alias,
                     'auc_score': curve.auc_score,

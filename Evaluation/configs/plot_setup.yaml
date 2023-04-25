@@ -47,16 +47,16 @@ plot_setup_map:
   jet:
     _target_: plot_roc.PlotSetup
     tick_size: 14
-    xlim: [0.3, 1]
+    xlim: [0.4, 1]
     #
     ylabel: 'Jet mis-id probability'
     ylabel_size: 16
     yscale: 'log'
-    ylim: [3e-4, 1]
+    ylim: [1e-5, 1]
     #
     ratio_xlabel_size: 16
     ratio_yscale: 'linear'
-    ratio_ylim: [0.4, 1.1]
+    ratio_ylim: [0.2, 2.0]
     ratio_ylabel: 'Ratio'
     ratio_ylabel_size: 16
     ratio_ylabel_pad: 17

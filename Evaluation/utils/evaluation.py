@@ -222,11 +222,15 @@ class PlotSetup:
             dm_text = r'DM$ \in {}$'.format(dm_bin)
         return dm_text
 
-    def add_text(self, ax, n_entries, pt_min, pt_max, eta_min, eta_max, dm_bin, period):
+    def add_text(self, ax, n_entries, period, **bins):
+        print(bins)
         header_y = 1.02
-        ax.text(0.03, 0.89 - n_entries*0.07, self.get_pt_text(pt_min, pt_max), fontsize=14, transform=ax.transAxes)
-        ax.text(0.03, 0.82 - n_entries*0.07, self.get_eta_text(eta_min, eta_max), fontsize=14, transform=ax.transAxes)
-        ax.text(0.03, 0.75 - n_entries*0.07, self.get_dm_text(dm_bin), fontsize=14, transform=ax.transAxes)
+        # ax.text(0.03, 0.89 - n_entries*0.07, self.get_pt_text(pt_min, pt_max), fontsize=14, transform=ax.transAxes)
+        # ax.text(0.03, 0.82 - n_entries*0.07, self.get_eta_text(eta_min, eta_max), fontsize=14, transform=ax.transAxes)
+        # ax.text(0.03, 0.75 - n_entries*0.07, self.get_dm_text(dm_bin), fontsize=14, transform=ax.transAxes)
+        ax.text(0.03, 0.89 - n_entries*0.07, r'${} < p_T < {}$ GeV'.format(bins["jet_pt_min"], bins["jet_pt_max"]), fontsize=14, transform=ax.transAxes)
+        ax.text(0.03, 0.82 - n_entries*0.07, r'${} < |\eta| < {}$'.format(bins["jet_eta_min"], bins["jet_eta_max"]), fontsize=14, transform=ax.transAxes)
+        ax.text(0.03, 0.75 - n_entries*0.07, r'${} < L(\tau,s\tau) < {}$ cm'.format(bins["Lxy_min"], bins["Lxy_max"]), fontsize=14, transform=ax.transAxes)
         ax.text(0.01, header_y, 'CMS', fontsize=14, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
         ax.text(0.12, header_y, 'Simulation Preliminary', fontsize=14, transform=ax.transAxes, fontstyle='italic',
                 fontfamily='sans-serif')
@@ -342,7 +346,7 @@ def select_curve(curve_list, **selection):
     else:
         raise Exception(f"Failed to find a single curve for selection: {[f'{k}=={v}' for k,v in selection.items()]}")
 
-def create_df(path_to_input_file, input_branches, path_to_pred_file, path_to_target_file, path_to_weights, pred_column_prefix=None, target_column_prefix=None):
+def create_df(path_to_input_file, input_branches, path_to_pred_file, path_to_target_file, path_to_weights, pred_column_prefix=None, target_column_prefix=None, global_branches=None):
     def read_branches(path_to_file, tree_name, branches):
         if not os.path.exists(path_to_input_file):
             raise RuntimeError(f"Specified file for inputs ({path_to_input_file}) does not exist")
@@ -352,7 +356,8 @@ def create_df(path_to_input_file, input_branches, path_to_pred_file, path_to_tar
                 df = tree.arrays(branches, library='pd')
             return df
         elif path_to_file.endswith('.h5') or path_to_file.endswith('.hdf5'):
-            return pd.read_hdf(path_to_file, tree_name, columns=branches)
+            # return pd.read_hdf(path_to_file, tree_name, columns=branches)
+            return pd.read_hdf(path_to_file, tree_name)[branches]
         raise RuntimeError("Unsupported file type.")
 
     def add_group(df, group_name, path_to_file, group_column_prefix):
@@ -364,7 +369,7 @@ def create_df(path_to_input_file, input_branches, path_to_pred_file, path_to_tar
             group_df = pd.read_hdf(path_to_file, group_name)
         else:
             group_df = pd.read_hdf(path_to_file)
-        
+
         # weight case
         if group_name == 'weights':
             group_df = pd.read_hdf(path_to_file)
@@ -402,6 +407,8 @@ def create_df(path_to_input_file, input_branches, path_to_pred_file, path_to_tar
         add_group(df, 'weights', path_to_weights, None)
     else:
         df['weight'] = pd.Series(np.ones(df.shape[0]), index=df.index)
+    if global_branches is not None:
+        df = read_branches(path_to_target_file, 'global_vars', global_branches).join(df)
     return df
 
 def prepare_filelists(sample_alias, path_to_input, path_to_pred, path_to_target, path_to_artifacts):

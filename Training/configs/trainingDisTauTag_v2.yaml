@@ -113,9 +113,9 @@ CellObjectType : [ PfCand, LostTrack, SecondaryVertex ] # All Cell Objects
 GlobalVariables : [
     "jet_pt",
     "jet_eta",
+    "Lrel",
     "Lxy",
-    "Lz",
-    "Lrel"
+    "Lz"
   ]
 
 # Embedded Cell Objects:

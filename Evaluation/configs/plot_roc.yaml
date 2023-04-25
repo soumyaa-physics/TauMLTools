@@ -6,35 +6,94 @@ defaults:
 path_to_mlflow: ???
 experiment_id: ???
 discriminators: # in the format run_id -> cfg
-  ???: # DeepTau v2.1
-    name: "DeepTau (v2.1)"
-    curve_types: ['roc_curve', 'roc_wp'] 
+
+  0d96d89c07ca4483a15ceaf3200f590c: # DeepTau v2.1
+    name: "ParNet (w/o weights)"
+    curve_types: ['roc_curve'] 
     plot_cfg:
-      color: grey
+      color: green
       dashed: false
       alpha: 1.
       dots_only: false # if true, possible also to specify `marker_size` here
       with_errors: true # plot error bars for each of `curve_types`
-  ???: # DeepTau v2.5
-    name: "DeepTau (v2.5)"
-    curve_types: ['roc_curve', 'roc_wp'] 
+  d96099382d0a4d3a8e432c807e2796a9: # DeepTau v2.1
+    name: "ParNet (w/ weights)"
+    curve_types: ['roc_curve'] 
     plot_cfg:
-      color: black
+      color: blue
       dashed: false
       alpha: 1.
-      dots_only: false
-      with_errors: true
+      dots_only: false # if true, possible also to specify `marker_size` here
+      with_errors: true # plot error bars for each of `curve_types`
+
+  # 4aca22afacc0477d9452de030c662f32: # DeepTau v2.1
+  #   name: "ParNet (pf)"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: green
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+  # fca3b70c2bff4986bf4be8bc95d5eb1a: # DeepTau v2.1
+  #   name: "ParNet (pf + lost tracks)"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: blue
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+  # c43f1e7fa1554056ae14ba001612a696: # DeepTau v2.1
+  #   name: "ParNet (pf + lost tracks + sv)"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: red
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+
+  # f7f0e1bb75814e3d9feedfd390ac2e38:
+  #   name: "ParNet (pad_conv)"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: green
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+  # 9a2e803f5c214697883ccf32b986ec46:
+  #   name: "ParNet (type_conv)"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: blue
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
 reference:  # should be present in `discriminators`
-  ???: 'roc_curve'
+  0d96d89c07ca4483a15ceaf3200f590c: 'roc_curve'
+  # 4aca22afacc0477d9452de030c662f32: 'roc_curve'
+  # f7f0e1bb75814e3d9feedfd390ac2e38: 'roc_curve'
 
 # region
 period:  # \ 2018 (13 TeV) \  Phase 2 \ # for plotting only, not used in curve selection 
 vs_type: ??? # jet/e/mu/tau
 dataset_alias: ??? # sample alias asigned in yaml cfg at eval step
-pt_bin: ??? # list, e.g [20, 100], min and max
-eta_bin: ??? # list, e.g [0, 1.5], min and max (of absolute eta)
-dm_bin: ??? # list, e.g [0, 1, 2, 10, 11], all DMs to be included
+
+bin:
+  jet_pt: ???
+  jet_eta: ???
+  Lxy: ???
+
+# pt_bin: ??? # list, e.g [20, 100], min and max
+# eta_bin: ??? # list, e.g [0, 1.5], min and max (of absolute eta)
+# dm_bin: ??? # list, e.g [0, 1, 2, 10, 11], all DMs to be included
 
 # will log the plot to the run of the first discriminator in the "discriminators" list
 output_dir: plots # within mlflow artifacts
-output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_pt_${pt_bin[0]}_${pt_bin[1]}_eta_${eta_bin[0]}_${eta_bin[1]}_dm_'
+# output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_pt_${pt_bin[0]}_${pt_bin[1]}_eta_${eta_bin[0]}_${eta_bin[1]}_dm_'
+output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lxy${bin.Lxy[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lxy${bin.Lxy[1]}'

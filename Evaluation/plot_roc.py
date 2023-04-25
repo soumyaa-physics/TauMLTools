@@ -19,17 +19,23 @@ from utils.evaluation import select_curve, PlotSetup, RocCurve
 def main(cfg: DictConfig) -> None:
     path_to_mlflow = to_absolute_path(cfg.path_to_mlflow)
     mlflow.set_tracking_uri(f"file://{path_to_mlflow}")
-    dmname = '_'.join([str(x) for x in cfg.dm_bin])
-    path_to_pdf = f'./{cfg.output_name}{dmname}.pdf' # hydra log directory
+    # dmname = '_'.join([str(x) for x in cfg.dm_bin])
+    path_to_pdf = f'./{cfg.output_name}.pdf' # hydra log directory
+    print("[INFO] Output name:", path_to_pdf)
     print()
 
     # retrieve pt bin from input cfg 
-    assert len(cfg.pt_bin)==2 and cfg.pt_bin[0] <= cfg.pt_bin[1]
-    pt_min, pt_max = cfg.pt_bin[0], cfg.pt_bin[1]
-    assert len(cfg.eta_bin)==2 and cfg.eta_bin[0] <= cfg.eta_bin[1]
-    eta_min, eta_max = cfg.eta_bin[0], cfg.eta_bin[1]
-    assert len(cfg.dm_bin)>=1
-    dm_bin = cfg.dm_bin
+    # assert len(cfg.pt_bin)==2 and cfg.pt_bin[0] <= cfg.pt_bin[1]
+    # pt_min, pt_max = cfg.pt_bin[0], cfg.pt_bin[1]
+    # assert len(cfg.eta_bin)==2 and cfg.eta_bin[0] <= cfg.eta_bin[1]
+    # eta_min, eta_max = cfg.eta_bin[0], cfg.eta_bin[1]
+    # assert len(cfg.dm_bin)>=1
+    # dm_bin = cfg.dm_bin
+    bin_ = cfg.bin
+    query_info = [[f'{key}_min',value[0]] for key, value in bin_.items()] \
+               + [[f'{key}_max',value[1]] for key, value in bin_.items()]
+    query_info = dict(query_info)
+    print("[INFO] Bin info:", query_info)
 
     # retrieve reference curve
     if len(cfg.reference)>1:
@@ -43,7 +49,7 @@ def main(cfg: DictConfig) -> None:
     with open(reference_json, 'r') as f:
         ref_discr_data = json.load(f)
     ref_curve = select_curve(ref_discr_data['metrics'][ref_curve_type], 
-                                pt_min=pt_min, pt_max=pt_max, eta_min=eta_min, eta_max=eta_max, dm_bin=dm_bin, vs_type=cfg.vs_type,
+                                **query_info, vs_type=cfg.vs_type,
                                 dataset_alias=cfg.dataset_alias)
     if ref_curve is None:
         raise RuntimeError('[INFO] didn\'t manage to retrieve a reference curve from performance.json')
@@ -65,7 +71,7 @@ def main(cfg: DictConfig) -> None:
 
             for curve_type in discr_cfg["curve_types"]: 
                 discr_curve = select_curve(discr_data['metrics'][curve_type], 
-                                            pt_min=pt_min, pt_max=pt_max, eta_min=eta_min, eta_max=eta_max, dm_bin=dm_bin, vs_type=cfg.vs_type,
+                                            **query_info, vs_type=cfg.vs_type,
                                             dataset_alias=cfg.dataset_alias)
                 if discr_curve is None:
                     print(f'[INFO] Didn\'t manage to retrieve a curve ({curve_type}) for discriminator ({discr_run_id}) from performance.json. Will proceed without plotting it.')
@@ -95,7 +101,7 @@ def main(cfg: DictConfig) -> None:
         # apply plotting style & save
         plot_setup = instantiate(cfg['plot_setup'])
         plot_setup.apply(curve_names, plot_entries, ax, ax_ratio)
-        plot_setup.add_text(ax, len(set(curve_names)), pt_min, pt_max, eta_min, eta_max, dm_bin, cfg['period'])
+        plot_setup.add_text(ax, len(set(curve_names)), cfg['period'],**query_info)
         plt.subplots_adjust(hspace=0)
         pdf.savefig(fig, bbox_inches='tight')
 

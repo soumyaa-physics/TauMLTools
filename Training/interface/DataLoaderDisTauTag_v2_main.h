@@ -229,9 +229,9 @@ public:
         getGlobVecRef(0, tau.jet_pt);
         getGlobVecRef(1, tau.jet_eta);
 
-        getGlobVecRef(2, -1);
-        getGlobVecRef(3, -1);
-        getGlobVecRef(4, -1);
+        getGlobVecRef(2, -999);
+        getGlobVecRef(3, -999);
+        getGlobVecRef(4, -999);
 
         if(jet_match_type)
         {

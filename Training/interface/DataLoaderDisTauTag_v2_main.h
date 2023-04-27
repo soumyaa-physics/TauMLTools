@@ -158,7 +158,7 @@ public:
             tauTuple->GetEntry(current_entry);
             auto& tau = const_cast<Tau&>(tauTuple->data());
             const std::optional<JetType> jet_match_type = 
-                Setup::recompute_jet_type ? analysis::GetJetType(tau)
+                Setup::recompute_jet_type ? analysis::GetJetType(tau, Setup::get_pu_jets)
                 : static_cast<JetType>(tau.tauType); 
 
             if (jet_match_type)
@@ -339,6 +339,7 @@ public:
 
                 fillGrid(Br::pfCand_valid,         tensor_i, 1.0);
                 fillGrid(Br::pfCand_pt,            tensor_i, tau.pfCand_pt.at(pfCand_idx));
+                fillGrid(Br::pfCand_eta,            tensor_i, tau.pfCand_eta.at(pfCand_idx));
                 fillGrid(Br::pfCand_phi,           tensor_i, tau.pfCand_phi.at(pfCand_idx));
                 fillGrid(Br::pfCand_log_pt,        tensor_i, std::log(tau.pfCand_pt.at(pfCand_idx)));
                 fillGrid(Br::pfCand_log_E,         tensor_i,
@@ -402,6 +403,7 @@ public:
 
                 fillGrid(Br::lostTrack_valid,         tensor_i, 1.0);
                 fillGrid(Br::lostTrack_pt,            tensor_i, tau.lostTrack_pt.at(lostTrack_idx));
+                fillGrid(Br::lostTrack_eta,           tensor_i, tau.lostTrack_eta.at(lostTrack_idx));
                 fillGrid(Br::lostTrack_phi,           tensor_i, tau.lostTrack_phi.at(lostTrack_idx));
                 fillGrid(Br::lostTrack_log_pt,        tensor_i, std::log(tau.lostTrack_pt.at(lostTrack_idx)));
                 fillGrid(Br::lostTrack_log_E,         tensor_i,
@@ -457,6 +459,7 @@ public:
                 fillGrid(Br::sv_valid,         tensor_i, 1.0);
                 fillGrid(Br::sv_pt,            tensor_i, tau.sv_pt.at(sv_idx));
                 fillGrid(Br::sv_phi,           tensor_i, tau.sv_phi.at(sv_idx));
+                fillGrid(Br::sv_eta,           tensor_i, tau.sv_eta.at(sv_idx));
                 fillGrid(Br::sv_log_pt,        tensor_i, std::log(tau.sv_pt.at(sv_idx)));
                 fillGrid(Br::sv_log_E,         tensor_i,
                     std::log(std::sqrt(pow(tau.sv_mass.at(sv_idx),2) +

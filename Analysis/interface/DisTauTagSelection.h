@@ -30,7 +30,7 @@ ENUM_NAMES(JetType) = {
     { JetType::tau, "tau" }
 };
 
-std::optional<JetType> GetJetType(const tau_tuple::Tau& tau) {
+std::optional<JetType> GetJetType(const tau_tuple::Tau& tau, const bool enable_pu_jets) {
 
     using GTGenLeptonKind = reco_tau::gen_truth::GenLepton::Kind;
 
@@ -76,8 +76,11 @@ std::optional<JetType> GetJetType(const tau_tuple::Tau& tau) {
         } else if( tau.genJet_index >= 0 && 
                    (tau.genLepton_kind <= 0 || tau.genLepton_kind == static_cast<int>(GenLeptonMatch::NoMatch)) &&
                    tau.genJet_pt > JetTypeSelection::genJet_pt && 
-                   std::abs(tau.genJet_eta) < JetTypeSelection::genJet_eta )
-                    return JetType::jet;
+                   std::abs(tau.genJet_eta) < JetTypeSelection::genJet_eta ) {
+            return JetType::jet;
+        } else if ( enable_pu_jets ) {
+            return JetType::jet;
+        }
     }
     return std::nullopt;
 

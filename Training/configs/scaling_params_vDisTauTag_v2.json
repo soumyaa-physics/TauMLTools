@@ -12,8 +12,8 @@
         },
         "pfCand_pt": {
             "global": {
-                "mean": 50.0,
-                "std": 50.0,
+                "mean": 125.0,
+                "std": 125.0,
                 "lim_min": -1.0,
                 "lim_max": 1.0,
                 "sqmean": null,
@@ -506,8 +506,8 @@
         },
         "sv_pt": {
             "global": {
-                "mean": 100.0,
-                "std": 100.0,
+                "mean": 125.0,
+                "std": 125.0,
                 "lim_min": -1.0,
                 "lim_max": 1.0,
                 "sqmean": null,

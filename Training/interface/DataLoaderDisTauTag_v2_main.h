@@ -84,7 +84,7 @@ public:
                 ("w_1_"+tau_name).c_str(),
                 ("w_1_"+tau_name).c_str()
             );
-            if (Setup::debug) hist_weights[tau_type]->SaveAs(("weights_"+tau_name+".root").c_str()); // It's required that all bins are filled in these histograms; save them to check incase binning is too fine and some bins are empty
+            if (Setup::save_weights) hist_weights[tau_type]->SaveAs(("weights_"+tau_name+".root").c_str()); // It's required that all bins are filled in these histograms; save them to check incase binning is too fine and some bins are empty
 
             target_histogram.reset();
             input_histogram .reset();
@@ -165,6 +165,8 @@ public:
             {
                 if(Setup::prop_y_glob) FillGlobal(tau, data->tau_i, jet_match_type);
                 data->y.at(data->tau_i * Setup::output_classes + static_cast<Int_t>(*jet_match_type)) = 1.0;
+                // const Float_t weight = (tau.dataset_group_id == 16864241410151851896) ? 10.0 : 1.0;
+                // data->weights.at(data->tau_i) = GetWeight(static_cast<Int_t>(*jet_match_type), tau.jet_pt, std::abs(tau.jet_eta)) * weight;
                 data->weights.at(data->tau_i) = GetWeight(static_cast<Int_t>(*jet_match_type), tau.jet_pt, std::abs(tau.jet_eta));
                 FillPfCand(tau, data->tau_i);
                 data->uncompress_index[data->tau_i] = data->uncompress_size;

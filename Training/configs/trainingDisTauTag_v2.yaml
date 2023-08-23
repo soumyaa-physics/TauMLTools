@@ -1,13 +1,17 @@
 Setup:
     
     debug                : False
-
-    n_tau                :  200 # number of candidates in one batch 
+    n_tau                :  300 # number of candidates in one batch 
     n_threads            :  1
     max_dr               :  0.5
     input_dir            : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1/"
-    spectrum_to_reweight : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1.root"
+    spectrum_to_reweight : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1_fixed_genTau.root"
+    # input_dir            : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1/"
+    # spectrum_to_reweight : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1.root"
+    # input_dir            : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/HNL-samples-mix-STAU_ext1/"
+    # spectrum_to_reweight : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/HNL-samples-spectrum/HNL-samples-mix-STAU_ext1.root"
     dataloader_core      : "TauMLTools/Training/interface/DataLoaderDisTauTag_v2_main.h"
+    save_weights         : True
     tau_types_names      : { "0":"jet", "1":"tau",  }
     output_classes       : 2 #number of elements in jet_types_names
     recompute_jet_type   : True
@@ -62,9 +66,9 @@ SetupBaseNN:
     model_name           : "TauJetTag"
     n_batches            : -1
     n_batches_val        : -1
-    n_batches_log        : 50
+    n_batches_log        : 100
     epoch                : 0
-    n_epochs             : 5
+    n_epochs             : 10
     validation_split     : 0.2
     max_queue_size       : 10
     n_load_workers       : 6
@@ -73,7 +77,7 @@ SetupBaseNN:
 
 SetupParticleNet:
 
-    use_input_grids      : [  PfCand, LostTrack, SecondaryVertex  ]
+    use_input_grids      : [  PfCand, LostTrack ]
 
     # preprocessing is in the form of reduction rate
     preprocess_mode      : "pad_conv"

@@ -7,12 +7,12 @@ if ! [ -d "$PATH_TO_MLFLOW" ]; then
     exit 1
 fi
 
-if ! [[ $PATH_TO_MLFLOW == *"mlruns/" || $PATH_TO_MLFLOW == *"mlruns" ]]; then
+if ! [[ $PATH_TO_MLFLOW == *"mlruns"* || $PATH_TO_MLFLOW == *"mlruns" ]]; then
   echo "ERROR: '$PATH_TO_MLFLOW' is not mlruns output directory."
   exit 1
 fi
 
-DIRS=`readlink -f ${PATH_TO_MLFLOW}/*/*/artifacts`
+DIRS=`readlink -f ${PATH_TO_MLFLOW}/*/artifacts`
 
 CMD=""
 for PATH_GLOB in ${DIRS[@]}; do

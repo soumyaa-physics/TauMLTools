@@ -425,6 +425,10 @@ def main(cfg: DictConfig) -> None:
         mlflow.log_dict(training_cfg, 'input_cfg/training_cfg.yaml')
         mlflow.log_artifact(scaling_cfg, 'input_cfg')
         mlflow.log_artifact(to_absolute_path("Training_DisTauTag_ParticleNetv2.py"), 'input_cfg')
+        if dl_config["Setup"]["save_weights"]:
+            for type_keys in dl_config["Setup"]["tau_types_names"]:
+                type_name = dl_config["Setup"]["tau_types_names"][type_keys]
+                mlflow.log_artifact(f"weights_{type_name}.root")
         mlflow.log_artifact(to_absolute_path("../commonReco.py"), 'input_cfg')
         mlflow.log_artifacts('.hydra', 'input_cfg/hydra')
         mlflow.log_artifact('Training_DisTauTag_ParticleNetv2.log', 'input_cfg/hydra')

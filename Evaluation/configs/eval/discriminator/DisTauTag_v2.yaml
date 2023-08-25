@@ -1,0 +1,13 @@
+# general
+name: DisTauTag (v2)
+raw: True
+
+# prediction/target columns
+pred_column_prefix: node_
+pred_column: ${.pred_column_prefix}${vs_type} # column in internally created pd.DataFrame to be used for metrics computation  
+target_column_prefix: node_
+
+# WPs
+# wp_from: pred_column
+# wp_thresholds: 'working_points.json' # will read thresholds from this file in mlflow run artifacts folder 
+# wp_thresholds_map: null

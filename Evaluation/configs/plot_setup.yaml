@@ -1,4 +1,4 @@
-plot_ratio: True
+plot_ratio: False
 plot_setup: ${.plot_setup_map.${vs_type}}
 plot_setup_map: 
 # ------------------------------------------
@@ -56,11 +56,11 @@ plot_setup_map:
     #
     ratio_xlabel_size: 16
     ratio_yscale: 'linear'
-    ratio_ylim: [0.2, 2.0]
+    ratio_ylim: [0.5, 1.5]
     ratio_ylabel: 'Ratio'
     ratio_ylabel_size: 16
     ratio_ylabel_pad: 17
     ratio_tick_size: 12
     #
     legend_loc: 'upper left'
-    legend_fontsize: 14
+    legend_fontsize: 11

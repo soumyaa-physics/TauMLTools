@@ -78,7 +78,7 @@ def create_df(path_to_preds, pred_samples, tau_type_to_select, selection,
     df = pd.concat(df, axis=0)
 
     # compute vs_type discriminator scores
-    vs_types = ['e', 'mu', 'jet']
+    vs_types = ['jet']
     for vs_type in vs_types:
         df['score_vs_' + vs_type] = tau_vs_other(df[f'{pred_group_name}_{pred_column_prefix}tau'].values, df[f'{pred_group_name}_{pred_column_prefix}' + vs_type].values)
    

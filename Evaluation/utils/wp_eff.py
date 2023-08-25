@@ -46,8 +46,14 @@ def differential_efficiency(df_true, df_fake, var_name, var_bins,
 
     for i, (var_min, var_max) in enumerate(zip(var_bins[:-1], var_bins[1:])):
         # slice dataframes in given bin
-        df_bin_true = df_true.query(f'{var_name}>{var_min} and {var_name}<={var_max}', inplace=False)
-        df_bin_fake = df_fake.query(f'{var_name}>{var_min} and {var_name}<={var_max}', inplace=False)
+        # df_bin_true = df_true.query(f'{var_name}>{var_min} and {var_name}<={var_max}', inplace=False)
+        # df_bin_fake = df_fake.query(f'{var_name}>{var_min} and {var_name}<={var_max}', inplace=False)
+        if var_name == "Lrel":
+            df_bin_true = df_true.query(f'(({var_name}>{var_min} and {var_name}<={var_max}) or targets_node_tau!=1)', inplace=False)
+            df_bin_fake = df_fake.query(f'(({var_name}>{var_min} and {var_name}<={var_max}) or targets_node_tau!=1)', inplace=False)
+        else:
+            df_bin_true = df_true.query(f'{var_name}>{var_min} and {var_name}<={var_max}', inplace=False)
+            df_bin_fake = df_fake.query(f'{var_name}>{var_min} and {var_name}<={var_max}', inplace=False)
         N_true = df_bin_true.shape[0]
         N_fake = df_bin_fake.shape[0]
         if require_WPs_in_numerator: # additionally require to pass specified WPs for eff's numerator

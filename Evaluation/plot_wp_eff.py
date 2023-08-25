@@ -41,7 +41,12 @@ def main(cfg: DictConfig) -> None:
             df_sel[tau_type] = df
 
     # compute and plot efficiency curves
-    wp_thrs, wp_names = list(wp_definitions[vs_type].values()), list(wp_definitions[vs_type].keys())
+    
+    if cfg.WPs_to_plot:
+        wp_list = {wp:wp_definitions[vs_type][wp] for wp in cfg.WPs_to_plot}
+    else:
+        wp_list = wp_definitions[vs_type]
+    wp_thrs, wp_names = list(wp_list.values()), list(wp_list.keys())
     WPs_to_require = OmegaConf.to_object(cfg['WPs_to_require'])
     del WPs_to_require[vs_type] # remove vs_type key
     eff, eff_up, eff_down = differential_efficiency(df_sel['tau'], df_sel[vs_type],

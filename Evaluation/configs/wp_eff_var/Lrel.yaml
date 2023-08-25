@@ -1,0 +1,21 @@
+var_cfg:
+  _target_: functools.partial
+  _args_: ["${get_method:__main__.plot_efficiency}"]
+
+  var_name: Lrel
+  var_bins: [ 0.001, 1.0, 3.0, 5.0, 10.0, 20.0, 40, 60, 80, 100, 120 ]
+
+  xlabels: null 
+  xerr: null
+
+  xscale: log
+  yscale_1: linear
+  yscale_2: log
+
+  ylim_1: [0.4, 1]
+  ylim_2: [1e-9, 2e-1]
+
+  xtitle: "Lrel (cm)"
+  ytitle_1: DisTauTag ID efficiency
+  ytitle_2: "${vs_type} mis-id probability"
+  legend_loc: "lower right"

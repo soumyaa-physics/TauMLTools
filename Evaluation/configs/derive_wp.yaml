@@ -2,36 +2,24 @@ wp_maker:
   _target_: derive_wp.WPMaker
 
   wp_definitions:
-    e:
-      VVTight: 0.6
-      VTight: 0.7
-      Tight: 0.8
-      Medium: 0.9 
-      Loose: 0.95
-      VLoose: 0.98
-      VVLoose: 0.99
-      VVVLoose: 0.995
-    mu:
-      Tight: 0.995
-      Medium: 0.998
-      Loose: 0.999
-      VLoose: 0.9995
     jet:
-      VVTight: 0.4
-      VTight: 0.5 
-      Tight: 0.6
-      Medium: 0.7
-      Loose: 0.8
-      VLoose: 0.9
-      VVLoose: 0.95
-      VVVLoose: 0.98
+
+      eff80: 0.8
+      eff90: 0.9
+      eff95: 0.95
+      eff98: 0.98
+      eff99: 0.99
+      eff99p2: 0.992
+      eff99p4: 0.994
+      eff99p6: 0.996
+      eff99p8: 0.998
     
   tpr_step: 0.0001 # will evenly sample grid of values from 0 to 1 with step=tpr_step
-  require_wp_vs_others: True # if in computation of WP thresholds for a given `vs_type` taus should pass WPs from `WPs_to_require` against remaining `vs_types` 
-  WPs_to_require:
-    e: VVVLoose
-    mu: VLoose
-    jet: VVVLoose
+  require_wp_vs_others: False # if in computation of WP thresholds for a given `vs_type` taus should pass WPs from `WPs_to_require` against remaining `vs_types` 
+  # WPs_to_require:
+  #   e: VVVLoose
+  #   mu: VLoose
+  #   jet: VVVLoose
   
   # convergence params
   epsilon: 1e-5
@@ -49,22 +37,26 @@ create_df:
   path_to_preds: "${create_df.path_to_mlflow}/${create_df.experiment_id}/${create_df.run_id}/artifacts/predictions/"
   tau_type_to_select: tau
   pred_samples: # samples in `path_to_preds` to take taus from 
-    2016APVUL_GluGluHToTauTau_M125: 
-      filename_pattern: 'eventTuple_*.h5' # single files, list of files and "*" are supported 
-      sample_lumi: 19.52
-      reweight_to_lumi: 137.64 # total luminosity or `null` to skip reweighting
-    2016UL_GluGluHToTauTau_M125: 
+    STAU_M400_100mm-new-ntuples: 
       filename_pattern: 'eventTuple_*.h5'
-      sample_lumi: 16.81
-      reweight_to_lumi: 137.64
-    2017UL_GluGluHToTauTau_M125: 
-      filename_pattern: 'eventTuple_*.h5'
-      sample_lumi: 41.48
-      reweight_to_lumi: 137.64
-    2018UL_GluGluHToTauTau_M125: 
-      filename_pattern: 'eventTuple_*.h5'
-      sample_lumi: 59.83
-      reweight_to_lumi: 137.64
+      sample_lumi: 1.0
+      reweight_to_lumi: 1.0
+    # 2016APVUL_GluGluHToTauTau_M125: 
+    #   filename_pattern: 'eventTuple_*.h5' # single files, list of files and "*" are supported 
+    #   sample_lumi: 19.52
+    #   reweight_to_lumi: 137.64 # total luminosity or `null` to skip reweighting
+    # 2016UL_GluGluHToTauTau_M125: 
+    #   filename_pattern: 'eventTuple_*.h5'
+    #   sample_lumi: 16.81
+    #   reweight_to_lumi: 137.64
+    # 2017UL_GluGluHToTauTau_M125: 
+    #   filename_pattern: 'eventTuple_*.h5'
+    #   sample_lumi: 41.48
+    #   reweight_to_lumi: 137.64
+    # 2018UL_GluGluHToTauTau_M125: 
+    #   filename_pattern: 'eventTuple_*.h5'
+    #   sample_lumi: 59.83
+    #   reweight_to_lumi: 137.64
 
   # naming conventions of prediction files
   pred_group_name: predictions
@@ -75,6 +67,8 @@ create_df:
   # add columns to apply selection on
   # paths to input ROOT files will be retrieved from corresponding pred_input_filemap.json
   add_columns_from: 'inputs' # either "predictions" or "inputs"
-  add_columns: [ 'tau_pt', 'tau_eta', 'tau_dz', 'tau_decayMode' ]
-  selection: '(tau_pt>=30) and (tau_pt<80) and (abs(tau_eta) < 2.3) and (abs(tau_dz) < 0.2) and not (tau_decayMode in [5,6])'
+  add_columns: [ 'jet_pt', 'jet_eta' ]
+  selection: '(jet_pt>=30) and (jet_pt<1000) and (abs(jet_eta) < 2.3)'
+  # selection: '(tau_pt>=30) and (tau_pt<80) and (abs(tau_eta) < 2.3) and (abs(tau_dz) < 0.2) and not (tau_decayMode in [5,6])'
+
   group_or_tree_name: taus # add_columns // taus -- either group name (add_columns_from=prediction) or tree name (add_columns_from=inputs)

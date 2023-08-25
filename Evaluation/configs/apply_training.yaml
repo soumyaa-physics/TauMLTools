@@ -10,6 +10,8 @@ training_cfg_upd:
     tau_types_names      : { "0":"jet", "1":"tau",  }
     n_globals            : 5
     input_type           : "ROOT"
+    get_pu_jets          : False
+    take_all_taus        : True
 
   SetupNN:
     n_batches: -1

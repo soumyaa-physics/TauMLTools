@@ -96,8 +96,6 @@ def main(cfg: DictConfig) -> None:
     # dump curves' data into json file
     json_exists = os.path.exists(output_json_path)
     json_open_mode = 'r+' if json_exists else 'w'
-    json_exists = None
-    json_open_mode = "w"
     with open(output_json_path, json_open_mode) as json_file:
         if json_exists: # read performance data to append additional info 
             performance_data = json.load(json_file)

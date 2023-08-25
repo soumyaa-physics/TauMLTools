@@ -7,45 +7,39 @@ path_to_mlflow: ???
 experiment_id: ???
 discriminators: # in the format run_id -> cfg
 
-  0d96d89c07ca4483a15ceaf3200f590c: # DeepTau v2.1
-    name: "ParNet (w/o weights)"
+  # Overtraining cheks:
+  
+  input_1:
+    run_id: aa49eb5f97c748788654e863a82bbfb5
+    name: "STAU400_10cm train."
+    dataset_alias: 'NEW-RUN-TTSemiLept-STAU400_100mm_train_sample'
     curve_types: ['roc_curve'] 
     plot_cfg:
-      color: green
-      dashed: false
-      alpha: 1.
-      dots_only: false # if true, possible also to specify `marker_size` here
-      with_errors: true # plot error bars for each of `curve_types`
-  d96099382d0a4d3a8e432c807e2796a9: # DeepTau v2.1
-    name: "ParNet (w/ weights)"
-    curve_types: ['roc_curve'] 
-    plot_cfg:
-      color: blue
+      color: red
       dashed: false
       alpha: 1.
       dots_only: false # if true, possible also to specify `marker_size` here
       with_errors: true # plot error bars for each of `curve_types`
 
-  # 4aca22afacc0477d9452de030c662f32: # DeepTau v2.1
-  #   name: "ParNet (pf)"
-  #   curve_types: ['roc_curve'] 
-  #   plot_cfg:
-  #     color: green
-  #     dashed: false
-  #     alpha: 1.
-  #     dots_only: false # if true, possible also to specify `marker_size` here
-  #     with_errors: true # plot error bars for each of `curve_types`
-  # fca3b70c2bff4986bf4be8bc95d5eb1a: # DeepTau v2.1
-  #   name: "ParNet (pf + lost tracks)"
-  #   curve_types: ['roc_curve'] 
-  #   plot_cfg:
-  #     color: blue
-  #     dashed: false
-  #     alpha: 1.
-  #     dots_only: false # if true, possible also to specify `marker_size` here
-  #     with_errors: true # plot error bars for each of `curve_types`
-  # c43f1e7fa1554056ae14ba001612a696: # DeepTau v2.1
-  #   name: "ParNet (pf + lost tracks + sv)"
+  input_2:
+    run_id: aa49eb5f97c748788654e863a82bbfb5
+    name: "STAU400_10cm excl."
+    dataset_alias: 'NEW-RUN-TTSemiLept-STAU400_100mm'
+    curve_types: ['roc_curve'] 
+    plot_cfg:
+      color: red
+      dashed: true
+      alpha: 1.
+      dots_only: false # if true, possible also to specify `marker_size` here
+      with_errors: true # plot error bars for each of `curve_types`
+
+
+  # Compare with HNL
+
+  # input_1:
+  #   run_id: d8df1408fa164d36b4ee603085c8d3ca
+  #   name: "HNL-M10 vs. TTBar (stau+HNL)"
+  #   dataset_alias: 'HNL-M10-TTSemiLept'
   #   curve_types: ['roc_curve'] 
   #   plot_cfg:
   #     color: red
@@ -53,10 +47,23 @@ discriminators: # in the format run_id -> cfg
   #     alpha: 1.
   #     dots_only: false # if true, possible also to specify `marker_size` here
   #     with_errors: true # plot error bars for each of `curve_types`
+  
+  # input_2:
+  #   run_id: d8df1408fa164d36b4ee603085c8d3ca
+  #   name: "STAU400 vs. TTBar (stau+HNL)"
+  #   dataset_alias: 'NEW-RUN-TTSemiLept-STAU400_100mm'
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: red
+  #     dashed: true
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
 
-
-  # f7f0e1bb75814e3d9feedfd390ac2e38:
-  #   name: "ParNet (pad_conv)"
+  # input_3:
+  #   run_id: aa49eb5f97c748788654e863a82bbfb5
+  #   name: "HNL-M10 vs. TTBar (stau-only)"
+  #   dataset_alias: 'HNL-M10-TTSemiLept'
   #   curve_types: ['roc_curve'] 
   #   plot_cfg:
   #     color: green
@@ -64,36 +71,201 @@ discriminators: # in the format run_id -> cfg
   #     alpha: 1.
   #     dots_only: false # if true, possible also to specify `marker_size` here
   #     with_errors: true # plot error bars for each of `curve_types`
-  # 9a2e803f5c214697883ccf32b986ec46:
-  #   name: "ParNet (type_conv)"
+  
+  # input_4:
+  #   run_id: aa49eb5f97c748788654e863a82bbfb5
+  #   name: "STAU400 vs. TTBar (stau-only)"
+  #   dataset_alias: 'NEW-RUN-TTSemiLept-STAU400_100mm_train_sample'
   #   curve_types: ['roc_curve'] 
   #   plot_cfg:
-  #     color: blue
+  #     color: green
+  #     dashed: true
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # Compare TTBar
+
+  # input_1:
+  #   run_id: aa49eb5f97c748788654e863a82bbfb5
+  #   name: "P-Net v2 (vs. TTBar)"
+  #   dataset_alias: 'NEW-RUN-TTSemiLept-STAU400_100mm'
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: green
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+  
+  # input_2:
+  #   run_id: aa49eb5f97c748788654e863a82bbfb5
+  #   name: "P-Net v2 (vs. TTBar + PU)"
+  #   dataset_alias: 'NEW-RUN-TTSemiLept_PU-STAU400_100mm'
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: green
+  #     dashed: true
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # # Comparison of with ISR
+
+  # input_1:
+  #   run_id: aa49eb5f97c748788654e863a82bbfb5
+  #   name: "P-Net v2 (vs. TTBar)"
+  #   dataset_alias: 'NEW-RUN-TTSemiLept-STAU400_100mm'
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: black
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+  
+  # input_2:
+  #   run_id: aa49eb5f97c748788654e863a82bbfb5
+  #   name: "P-Net v2 (vs. STau ISR/FSR)"
+  #   dataset_alias: 'ISR-STAU400_100mm'
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: black
+  #     dashed: true
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # Comparison of all models ----------------------------------> 
+  # num1:
+  #   run_id: 4f9c2f7ca58944e3b2728091e1aefcd8
+  #   name: "small"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: green
   #     dashed: false
   #     alpha: 1.
   #     dots_only: false # if true, possible also to specify `marker_size` here
   #     with_errors: true # plot error bars for each of `curve_types`
 
+  # num2:
+  #   run_id: 59cf314d9d9044baaf3d49d35c53db6a
+  #   name: "knn-up"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: blue
+  #     dashed: true
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # num3:
+  #   run_id: 79f5a3ce40a7428f8339032b6c905454
+  #   name: "weight"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: red
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types` 
+
+  # num4:
+  #   run_id: 940458d81e27400bb9f0a2973d674073
+  #   name: "pad_conv"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:Stau
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # num5:
+  #   run_id: aa49eb5f97c748788654e863a82bbfb5
+  #   name: "pf_tracks"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: black
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # num6:
+  #   run_id: b03a97a704bd426a9060a40ac5f302d7
+  #   name: "type_conv"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: navy
+  #     dashed: true
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # num7:
+  #   run_id: cad57959a06443f1b9856015d46215ce
+  #   name: "noweight"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: tomato
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types` 
+
+  # num8:    
+  #   run_id: caffc140aded449ebc9b5aeedf5ebbcf
+  #   name: "pf_tracks_sv"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: yellow
+  #     dashed: false
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # num9:
+  #   run_id: d22437ffdcbb46338ba79bdacc1f1d62
+  #   name: "pf"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:Stau
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # num10:
+  #   run_id: f82d4b28128945d9b051ed97d5941be7
+  #   name: "knn-reduced"
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: slategray
+  #     dashed: true
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+
 reference:  # should be present in `discriminators`
-  0d96d89c07ca4483a15ceaf3200f590c: 'roc_curve'
-  # 4aca22afacc0477d9452de030c662f32: 'roc_curve'
-  # f7f0e1bb75814e3d9feedfd390ac2e38: 'roc_curve'
+  input_1: 'roc_curve'
 
 # region
 period:  # \ 2018 (13 TeV) \  Phase 2 \ # for plotting only, not used in curve selection 
 vs_type: ??? # jet/e/mu/tau
-dataset_alias: ??? # sample alias asigned in yaml cfg at eval step
+dataset_alias: null # sample alias asigned in yaml cfg at eval step
 
 bin:
   jet_pt: ???
   jet_eta: ???
-  Lxy: ???
+  Lrel: ???
 
 # pt_bin: ??? # list, e.g [20, 100], min and max
 # eta_bin: ??? # list, e.g [0, 1.5], min and max (of absolute eta)
 # dm_bin: ??? # list, e.g [0, 1, 2, 10, 11], all DMs to be included
 
 # will log the plot to the run of the first discriminator in the "discriminators" list
-output_dir: plots # within mlflow artifacts
+# output_dir: plots_HNL # within mlflow artifacts
+output_dir: plots_overtrain
+
 # output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_pt_${pt_bin[0]}_${pt_bin[1]}_eta_${eta_bin[0]}_${eta_bin[1]}_dm_'
-output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lxy${bin.Lxy[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lxy${bin.Lxy[1]}'
+# output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lxy${bin.Lxy[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lxy${bin.Lxy[1]}'
+# output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lrel${bin.Lrel[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lrel${bin.Lrel[1]}'
+# output_name: 'roc_curve_vs_${vs_type}_PU_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lxy${bin.Lrel[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lxy${bin.Lrel[1]}'
+output_name: 'roc_curve_vs_${vs_type}_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lrel${bin.Lrel[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lrel${bin.Lrel[1]}'

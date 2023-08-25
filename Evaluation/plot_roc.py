@@ -41,8 +41,11 @@ def main(cfg: DictConfig) -> None:
     if len(cfg.reference)>1:
         raise RuntimeError(f'Expect to have only one reference discriminator, got: {cfg.reference.keys()}')
     reference_cfg = OmegaConf.to_object(cfg.reference) # convert to python dict to enable popitem()
-    ref_discr_run_id, ref_curve_type = reference_cfg.popitem()
-    ref_discr_cfg = cfg["discriminators"][ref_discr_run_id]
+    ref_discr_name, ref_curve_type = reference_cfg.popitem()
+    ref_discr_cfg = cfg["discriminators"][ref_discr_name]
+    ref_discr_run_id = ref_discr_cfg.run_id
+    if not cfg.dataset_alias: dataset_ref = ref_discr_cfg.dataset_alias
+    else: dataset_ref = cfg.dataset_alias
     assert isinstance(ref_curve_type, str)
 
     reference_json = f'{path_to_mlflow}/{cfg.experiment_id}/{ref_discr_run_id}/artifacts/performance.json'
@@ -50,7 +53,7 @@ def main(cfg: DictConfig) -> None:
         ref_discr_data = json.load(f)
     ref_curve = select_curve(ref_discr_data['metrics'][ref_curve_type], 
                                 **query_info, vs_type=cfg.vs_type,
-                                dataset_alias=cfg.dataset_alias)
+                                dataset_alias=dataset_ref)
     if ref_curve is None:
         raise RuntimeError('[INFO] didn\'t manage to retrieve a reference curve from performance.json')
 
@@ -63,18 +66,22 @@ def main(cfg: DictConfig) -> None:
     curves_to_plot = []
     curve_names = []
     with PdfPages(path_to_pdf) as pdf:
-        for discr_run_id, discr_cfg in cfg.discriminators.items():
+        for discr_run_name, discr_cfg in cfg.discriminators.items():
+            discr_run_id = cfg["discriminators"][discr_run_name].run_id
             # retrieve discriminator data from corresponding json 
             json_file = f'{path_to_mlflow}/{cfg.experiment_id}/{discr_run_id}/artifacts/performance.json'
+            if not cfg.dataset_alias: dataset_ref = discr_cfg.dataset_alias
+            else: dataset_ref = cfg.dataset_alias
             with open(json_file, 'r') as f:
                 discr_data = json.load(f)
 
             for curve_type in discr_cfg["curve_types"]: 
                 discr_curve = select_curve(discr_data['metrics'][curve_type], 
                                             **query_info, vs_type=cfg.vs_type,
-                                            dataset_alias=cfg.dataset_alias)
+                                            dataset_alias=dataset_ref)
                 if discr_curve is None:
                     print(f'[INFO] Didn\'t manage to retrieve a curve ({curve_type}) for discriminator ({discr_run_id}) from performance.json. Will proceed without plotting it.')
+                    print(f'[INFO] {dataset_ref}, {query_info}')
                     continue
                 else:
                     discr_curve['plot_cfg'] = discr_cfg['plot_cfg']
@@ -105,9 +112,9 @@ def main(cfg: DictConfig) -> None:
         plt.subplots_adjust(hspace=0)
         pdf.savefig(fig, bbox_inches='tight')
 
-    with mlflow.start_run(experiment_id=cfg.experiment_id, run_id=list(cfg.discriminators.keys())[0]):
+    with mlflow.start_run(experiment_id=cfg.experiment_id, run_id=ref_discr_run_id):
         mlflow.log_artifact(path_to_pdf, cfg['output_dir'])
-    print(f'\n    Saved the plot in artifacts/{cfg["output_dir"]} for runID={list(cfg.discriminators.keys())[0]}\n')
+    print(f'\n    Saved the plot in artifacts/{cfg["output_dir"]} for runID={ref_discr_run_id}\n')
 
 if __name__ == '__main__':
     main()

@@ -6,6 +6,7 @@ Setup:
     max_dr               :  0.5
     input_dir            : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1/"
     spectrum_to_reweight : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1_fixed_genTau.root"
+    # spectrum_to_reweight : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1_fixed_genTau_minrho.root"
     # input_dir            : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1/"
     # spectrum_to_reweight : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1.root"
     # input_dir            : "/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/HNL-samples-mix-STAU_ext1/"
@@ -13,6 +14,7 @@ Setup:
     dataloader_core      : "TauMLTools/Training/interface/DataLoaderDisTauTag_v2_main.h"
     save_weights         : True
     tau_types_names      : { "0":"jet", "1":"tau",  }
+    take_all_taus        : False # if True all reco taus will be taken without xyz cut
     output_classes       : 2 #number of elements in jet_types_names
     recompute_jet_type   : True
     weight_thr           : 1000

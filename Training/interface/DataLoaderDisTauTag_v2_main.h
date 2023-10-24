@@ -158,7 +158,7 @@ public:
             tauTuple->GetEntry(current_entry);
             auto& tau = const_cast<Tau&>(tauTuple->data());
             const std::optional<JetType> jet_match_type = 
-                Setup::recompute_jet_type ? analysis::GetJetType(tau, Setup::get_pu_jets)
+                Setup::recompute_jet_type ? analysis::GetJetType(tau, Setup::get_pu_jets, Setup::take_all_taus)
                 : static_cast<JetType>(tau.tauType); 
 
             if (jet_match_type)

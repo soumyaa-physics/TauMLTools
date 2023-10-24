@@ -19,14 +19,14 @@ struct Data {
     template<typename T, T... I> Data(std::integer_sequence<T, I...> int_seq)
     : y(Setup::n_tau * Setup::output_classes, 0), tau_i(0), 
     uncompress_index(Setup::n_tau, 0), uncompress_size(0),
-    weights(Setup::n_tau, 0) //, x_glob(Setup::n_tau * Setup::n_Global, 0)
+    weights(Setup::n_tau, 0), y_global(Setup::n_tau * Setup::n_globals, 0)
     {
         ((init_grid<FeaturesHelper<std::tuple_element_t<I, FeatureTuple>>>()),...);
     }
     std::unordered_map<CellObjectType, std::vector<Float_t>> x;
     std::vector<Float_t> y;
     std::vector<Float_t> weights;
-    // std::vector<Float_t> x_glob; // will not be scaled
+    std::vector<Float_t> y_global;
 
     Long64_t tau_i; // the number of taus filled in the tensor filled_tau <= n_tau;
     std::vector<unsigned long> uncompress_index; // index of the tau when events are dropped;
@@ -158,12 +158,12 @@ public:
             tauTuple->GetEntry(current_entry);
             auto& tau = const_cast<Tau&>(tauTuple->data());
             const std::optional<JetType> jet_match_type = 
-                Setup::recompute_jet_type ? analysis::GetJetType(tau)
+                Setup::recompute_jet_type ? analysis::GetJetType(tau, Setup::get_pu_jets, Setup::take_all_taus)
                 : static_cast<JetType>(tau.tauType); 
 
             if (jet_match_type)
             {
-                // if(Setup::to_propagate_glob) FillGlob(data->tau_i, tau, jet_match_type);
+                if(Setup::prop_y_glob) FillGlobal(tau, data->tau_i, jet_match_type);
                 data->y.at(data->tau_i * Setup::output_classes + static_cast<Int_t>(*jet_match_type)) = 1.0;
                 data->weights.at(data->tau_i) = GetWeight(static_cast<Int_t>(*jet_match_type), tau.jet_pt, std::abs(tau.jet_eta));
                 FillPfCand(data->tau_i, tau);
@@ -171,7 +171,7 @@ public:
                 ++(data->tau_i);
             }
             else if ( tau.jet_index >= 0 && Setup::include_mismatched ) {
-                // if(Setup::to_propagate_glob) FillGlob(data->tau_i, tau, jet_match_type);
+                if(Setup::prop_y_glob) FillGlobal(tau, data->tau_i, jet_match_type);
                 FillPfCand(data->tau_i, tau);
                 data->uncompress_index[data->tau_i] = data->uncompress_size;
                 ++(data->tau_i);
@@ -217,64 +217,55 @@ public:
         return dphi;
     }
 
-    // void FillGlob(const Long64_t tau_i, const Tau& tau,
-    //             const boost::optional<JetType> jet_match_type)
-    // {
-    //     auto getGlobVecRef = [&](auto _fe, Float_t value){
-    //             size_t _feature_idx = static_cast<size_t>(_fe);
-    //             if(_feature_idx < 0) return;
-    //             const size_t index = Setup::n_Global * tau_i + _feature_idx;
-    //             data->x_glob.at(index) = value;
-    //         };
+    void FillGlobal(const Tau& tau, const Long64_t tau_i,
+                        const std::optional<JetType> jet_match_type)
+    {
+        auto getGlobVecRef = [&](int _fe, Float_t value){
+                if(_fe < 0) return;
+                const size_t index = Setup::n_globals * tau_i + _fe;
+                data->y_global.at(index) = value;
+            };
 
-    //     typedef Global_Features Br;
+        getGlobVecRef(0, tau.jet_pt);
+        getGlobVecRef(1, tau.jet_eta);
 
-    //     getGlobVecRef(Br::jet_pt, tau.jet_pt);
-    //     getGlobVecRef(Br::jet_eta, tau.jet_eta);
+        getGlobVecRef(2, -999);
+        getGlobVecRef(3, -999);
+        getGlobVecRef(4, -999);
 
-        
-    //     getGlobVecRef(Br::jet_index, tau.jet_index);
-    //     getGlobVecRef(Br::run, tau.run);
-    //     getGlobVecRef(Br::lumi, tau.lumi);
-    //     getGlobVecRef(Br::evt, tau.evt);
-        
-    //     // Only signal features
-    //     getGlobVecRef(Br::Lxy, -1);
-    //     getGlobVecRef(Br::Lz, -1);
-    //     getGlobVecRef(Br::Lrel, -1);
-        
-    //     if(jet_match_type)
-    //     {
-    //         if(jet_match_type == JetType::tau)
-    //         {
-    //             reco_tau::gen_truth::GenLepton genLeptons = 
-    //                 reco_tau::gen_truth::GenLepton::fromRootTuple(
-    //                         tau.genLepton_lastMotherIndex,
-    //                         tau.genParticle_pdgId,
-    //                         tau.genParticle_mother,
-    //                         tau.genParticle_charge,
-    //                         tau.genParticle_isFirstCopy,
-    //                         tau.genParticle_isLastCopy,
-    //                         tau.genParticle_pt,
-    //                         tau.genParticle_eta,
-    //                         tau.genParticle_phi,
-    //                         tau.genParticle_mass,
-    //                         tau.genParticle_vtx_x,
-    //                         tau.genParticle_vtx_y,
-    //                         tau.genParticle_vtx_z);
+        if(jet_match_type)
+        {
+            if(jet_match_type == JetType::tau)
+            {
+                reco_tau::gen_truth::GenLepton genLeptons = 
+                    reco_tau::gen_truth::GenLepton::fromRootTuple(
+                            tau.genLepton_lastMotherIndex,
+                            tau.genParticle_pdgId,
+                            tau.genParticle_mother,
+                            tau.genParticle_charge,
+                            tau.genParticle_isFirstCopy,
+                            tau.genParticle_isLastCopy,
+                            tau.genParticle_pt,
+                            tau.genParticle_eta,
+                            tau.genParticle_phi,
+                            tau.genParticle_mass,
+                            tau.genParticle_vtx_x,
+                            tau.genParticle_vtx_y,
+                            tau.genParticle_vtx_z);
 
-    //             auto vertex = genLeptons.lastCopy().vertex;
-    //             if( std::abs(genLeptons.lastCopy().pdgId) != 15 )
-    //                 throw std::runtime_error("Error FillGlob: last copy of genLeptons is not tau.");
-    //             // get the displacement wrt to the primary vertex
-    //             auto Lrel = genLeptons.lastCopy().getDisplacement();
+                auto vertex = genLeptons.lastCopy().vertex;
+                if( std::abs(genLeptons.lastCopy().pdgId) != 15 )
+                    throw std::runtime_error("Error FillGlob: last copy of genLeptons is not tau.");
 
-    //             getGlobVecRef(Br::Lrel, Lrel);
-    //             getGlobVecRef(Br::Lxy, std::abs(vertex.rho()));
-    //             getGlobVecRef(Br::Lz, std::abs(vertex.z()));
-    //         }
-    //     }
-    // }
+                // get the displacement wrt to the mother vertex
+                auto Lrel = genLeptons.lastCopy().getDisplacement();
+
+                getGlobVecRef(2, Lrel);
+                getGlobVecRef(3, std::abs(vertex.rho()));
+                getGlobVecRef(4, std::abs(vertex.z()));
+            }
+        }
+    }
 
     void FillPfCand(const Long64_t tau_i,
                     const Tau& tau)

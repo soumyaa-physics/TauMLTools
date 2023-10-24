@@ -18,6 +18,7 @@ static const double gen_tau_pt = 20; //GeV
 static const double gen_tau_eta = 2.4; //GeV
 static const double gen_z = 100; //cm
 static const double gen_rho = 50; //cm
+static const double gen_rho_min = -999; //cm
 static const double genLepton_jet_dR = 0.4;
 
 }
@@ -31,7 +32,9 @@ ENUM_NAMES(JetType) = {
     { JetType::tau, "tau" }
 };
 
-std::optional<JetType> GetJetType(const tau_tuple::Tau& tau, const bool enable_pu_jets) {
+std::optional<JetType> GetJetType(const tau_tuple::Tau& tau,
+                                  const bool enable_pu_jets = false,
+                                  const bool take_all_taus = false) {
 
     using GTGenLeptonKind = reco_tau::gen_truth::GenLepton::Kind;
 
@@ -65,6 +68,7 @@ std::optional<JetType> GetJetType(const tau_tuple::Tau& tau, const bool enable_p
 
             if( std::abs(vertex.z()) < JetTypeSelection::gen_z &&
                 std::abs(vertex.rho()) < JetTypeSelection::gen_rho &&
+                std::abs(vertex.rho()) > JetTypeSelection::gen_rho_min &&
                 visible_p4.pt() > JetTypeSelection::gen_tau_pt &&
                 std::abs(visible_p4.eta()) < JetTypeSelection::gen_tau_eta 
             )
@@ -74,7 +78,12 @@ std::optional<JetType> GetJetType(const tau_tuple::Tau& tau, const bool enable_p
 
                 double dR = ROOT::Math::VectorUtil::DeltaR(jet_p4, genLeptons.visibleP4());
                 if( dR < JetTypeSelection::genLepton_jet_dR ) return JetType::tau;
-            }
+            } else if( take_all_taus &&
+                       visible_p4.pt() > JetTypeSelection::gen_tau_pt &&
+                       std::abs(visible_p4.eta()) < JetTypeSelection::gen_tau_eta ) {
+                       return JetType::tau;
+                       }
+
         } else if( tau.genJet_index >= 0 && 
                    (tau.genLepton_kind <= 0 || tau.genLepton_kind == static_cast<int>(GenLeptonMatch::NoMatch)) &&
                    tau.genJet_pt > JetTypeSelection::genJet_pt && 

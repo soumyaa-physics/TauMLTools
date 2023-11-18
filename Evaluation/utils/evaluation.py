@@ -229,9 +229,12 @@ class PlotSetup:
         # ax.text(0.03, 0.89 - n_entries*0.07, self.get_pt_text(pt_min, pt_max), fontsize=14, transform=ax.transAxes)
         # ax.text(0.03, 0.82 - n_entries*0.07, self.get_eta_text(eta_min, eta_max), fontsize=14, transform=ax.transAxes)
         # ax.text(0.03, 0.75 - n_entries*0.07, self.get_dm_text(dm_bin), fontsize=14, transform=ax.transAxes)
-        ax.text(0.5, 0.90, r'${} < p_T < {}$ GeV'.format(bins["jet_pt_min"], bins["jet_pt_max"]), fontsize=14, transform=ax.transAxes)
-        ax.text(0.5, 0.83, r'${} < |\eta| < {}$'.format(bins["jet_eta_min"], bins["jet_eta_max"]), fontsize=14, transform=ax.transAxes)
-        ax.text(0.5, 0.76, r'${} < L(\tau,s\tau) < {}$ cm'.format(bins["Lrel_min"], bins["Lrel_max"]), fontsize=14, transform=ax.transAxes)
+        
+        
+        ax.text(0.55, 0.90, r'${} < p_T < {}$ GeV'.format(bins["jet_pt_min"], bins["jet_pt_max"]), fontsize=14, transform=ax.transAxes)
+        ax.text(0.55, 0.83, r'${} < |\eta| < {}$'.format(bins["jet_eta_min"], bins["jet_eta_max"]), fontsize=14, transform=ax.transAxes)
+        ax.text(0.55, 0.76, r'${} < L(\tau,s\tau) < {}$ cm'.format(bins["Lrel_min"], bins["Lrel_max"]), fontsize=14, transform=ax.transAxes)
+
         ax.text(0.01, header_y, 'CMS', fontsize=14, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
         ax.text(0.12, header_y, 'Simulation', fontsize=14, transform=ax.transAxes, fontstyle='italic',
                 fontfamily='sans-serif')

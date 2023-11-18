@@ -17,10 +17,8 @@ bins:
   jet_eta: [[-2.3, 2.3]]
   Lrel: [
           [0.0, 200.0],
-          # [0.0, 0.2],
-          # [0.2, 1.0,],
-          # [1.0, 5.0],
-          [0.0, 5.0],
+          [0.0, 1.0],
+          [1.0, 5.0],
           [5.0, 20.0],
           [20.0, 50.0],
           [50.0, 200.0]
@@ -37,11 +35,11 @@ WPs_to_require: null # null to not apply WP as selection
 #   mu: VLoose
 
 # inputs/paths
-input_samples: # "sample_alias": [list of strings with tau types to be selected]
+input_samples: ??? # "sample_alias": [list of strings with tau types to be selected]
   # STAU_M400_100mm-new-ntuples: ['tau']
   # STAU_M400_100mm-new-ntuples_train_sample: ['tau']
-  HeavyNeutrino_trilepton_M-10_V-0.0004_tau_massiveAndCKM_LO: ['tau']
-  TTToSemiLeptonic-new-ntuples: ['jet']
+  # HeavyNeutrino_trilepton_M-10_V-0.0004_tau_massiveAndCKM_LO: ['tau']
+  # TTToSemiLeptonic-new-ntuples: ['jet']
   # TTToSemiLeptonic-new-ntuples-plus-PU : ['jet']
 
 path_to_input: null

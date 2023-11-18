@@ -2,6 +2,7 @@
 training_cfg_upd:
   Setup:
     n_tau: 1000
+    # dataloader_core: "TauMLTools/Training/interface/DataLoaderDisTauTag_main.h"
     dataloader_core: "TauMLTools/Training/interface/DataLoaderDisTauTag_v2_main.h"
     debug: False
     recompute_jet_type   : True
@@ -37,6 +38,7 @@ run_id: ???
 
 # training/scaling cfg to init DataLoader class
 path_to_training_cfg: ${path_to_mlflow}/${experiment_id}/${run_id}/artifacts/input_cfg/training_cfg.yaml
+# scaling_cfg: ${path_to_mlflow}/${experiment_id}/${run_id}/artifacts/input_cfg/scaling_params_vDisTauTag_v1.json
 scaling_cfg: ${path_to_mlflow}/${experiment_id}/${run_id}/artifacts/input_cfg/scaling_params_vDisTauTag_v2.json
 
 # input path and file name

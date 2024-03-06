@@ -44,6 +44,17 @@ def differential_efficiency(df_true, df_fake, var_name, var_bins,
         df_fake = df_fake.query(WP_cut, inplace=False)
         assert require_WPs_in_numerator, "require_WPs_in_numerator should be True, if require_WPs_in_denominator==True"
 
+    # Calculate inclusive efficiency
+    _N_true = df_true.shape[0]
+    _N_fake = df_fake.shape[0]
+    _eff1, _, _ = efficiency(df_true[f'{discr_column_prefix}{vs_type}'], _N_true, thrs)
+    _eff2, _, _ = efficiency(df_fake[f'{discr_column_prefix}{vs_type}'], _N_fake, thrs)
+    print("Inclusive preformance->")
+    print("thrs:", thrs)
+    print("eff:", _eff1)
+    print("misID:", _eff2)
+    exit()
+    
     for i, (var_min, var_max) in enumerate(zip(var_bins[:-1], var_bins[1:])):
         # slice dataframes in given bin
         # df_bin_true = df_true.query(f'{var_name}>{var_min} and {var_name}<={var_max}', inplace=False)
@@ -76,7 +87,8 @@ def plot_efficiency(eff, eff_up, eff_down, labels, var_bins,
         x = range(len(xlabels))
     if xerr is None:
         xerr = ((var_bins[1:]-var_bins[0:-1])/2)
-    ncol = len(labels) // 4
+    # ncol = len(labels) // 4
+    ncol = 1
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15,7))
     for k in range(len(labels)):
@@ -90,6 +102,7 @@ def plot_efficiency(eff, eff_up, eff_down, labels, var_bins,
     ax1.set_ylim(ylim_1)
     ax1.tick_params(labelsize=14)
     ax1.grid(True)
+    # print(labels, legend_loc, ncol)
     ax1.legend(labels, fontsize=14, loc=legend_loc, ncol=ncol)
     if yscale_1 == 'log':
         locmin = matplotlib.ticker.LogLocator(base=10.0,subs=(0.98,0.99,0.995),numticks=12)
@@ -114,5 +127,5 @@ def plot_efficiency(eff, eff_up, eff_down, labels, var_bins,
         ax2.set_xticks(x)
         ax2.set_xticklabels(xlabels)
 
-    plt.show()
+    # plt.show()
     return fig

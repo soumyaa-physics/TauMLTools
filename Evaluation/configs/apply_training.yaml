@@ -9,7 +9,7 @@ training_cfg_upd:
     prop_y_glob          : True # This probagate Glob features (needed for evaluation)
     include_mismatched   : False # whether to keep tau candidates with tau_type not present in `tau_types_names`
     tau_types_names      : { "0":"jet", "1":"tau",  }
-    n_globals            : 5
+    n_globals            : 6
     input_type           : "ROOT"
     get_pu_jets          : False
     take_all_taus        : True
@@ -26,7 +26,8 @@ training_cfg_upd:
     "jet_eta",
     "Lrel",
     "Lxy",
-    "Lz"
+    "Lz",
+    "nConstituents"
   ]
 
 dataloader_module: DataLoaderReco

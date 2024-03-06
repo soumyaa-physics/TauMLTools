@@ -26,7 +26,7 @@ R.gInterpreter.Declare('#include "../interface/DataLoaderDisTauTag_v2_main.h"')
 
 
 n_tau          = config["Setup"]["n_tau"]
-outclass       = len(config["Setup"]["jet_types_names"])
+outclass       = len(config["Setup"]["tau_types_names"])
 n_features = {}
 n_features_map = {}
 n_seq = {}
@@ -53,7 +53,7 @@ for root, dirs, files in os.walk(os.path.abspath(R.Setup.input_dir)):
 
 data_loader = R.DataLoader()
 
-n_batches = 50
+n_batches = 100
 
 times = []
 
@@ -90,8 +90,12 @@ def create_histograms(conf):
                 hists[domain][celltype][feature_str] = R.TH1D(celltype+feature_str+"_data"+str(domain),
                                                               celltype+feature_str+"_data"+str(domain),
                                                                         50, -2, 2)
+            hists[domain][celltype]["n_particles"] = R.TH1D(celltype+feature_str+"_data"+str(domain),
+                                                        celltype+feature_str+"_data"+str(domain),
+                                                                    60, 0, 60)
     return hists
 
+FOLDER = "histograms"
 
 def test_input():
     hists_ditionary = create_histograms(config)
@@ -127,43 +131,52 @@ def test_input():
                         if input_[tau_i][pf_i][0] == 0:
                             continue
                         hists_ditionary[domian_i][celltype][feature].Fill(input_[tau_i][pf_i][n_features_map[celltype][feature]])
-        # exit()
+                # print(np.sum(input_[tau_i,:,0]))
+                hists_ditionary[domian_i][celltype]["n_particles"].Fill(np.sum(input_[tau_i,:,0]))
+
     # check if histograms foler exists if not create it
-    if not os.path.exists("histograms"):
-        os.makedirs("histograms")
+    if not os.path.exists(FOLDER):
+        os.makedirs(FOLDER)
 
     # plot histograms on canvas and save with the naming coresponing to the feature
     for celltype in hists_ditionary[0]:
         for feature in hists_ditionary[0][celltype]:
-            
             c = R.TCanvas("c", "c", 800, 800)
-            
-            hists_ditionary[0][celltype][feature].Scale(1/hists_ditionary[0][celltype][feature].Integral())
-            hists_ditionary[0][celltype][feature].SetLineColor(R.kBlue)
-            hists_ditionary[0][celltype][feature].SetFillColor(R.kBlue)
-            hists_ditionary[0][celltype][feature].SetLineWidth(1)
-            hists_ditionary[0][celltype][feature].SetMarkerSize(0)
-            hists_ditionary[0][celltype][feature].SetMaximum(1.0)
-            hists_ditionary[0][celltype][feature].SetMinimum(0.0)
-            hists_ditionary[0][celltype][feature].SetFillStyle(3353)
-            hists_ditionary[0][celltype][feature].Draw("HIST")
+            # c.SetLogy()
+            hist0 = hists_ditionary[0][celltype][feature]
+            hist0.Scale(1/hist0.Integral())
+            hist0.SetLineColor(R.kBlue)
+            hist0.SetFillColor(R.kBlue)
+            hist0.SetLineWidth(1)
+            hist0.SetMarkerSize(0)
+            hist0.SetMaximum(1.0)
+            hist0.SetMinimum(0.0)
+            hist0.SetFillStyle(3353)
+            hist0.SetStats(0)
+            hist0.SetBinContent(1, hist0.GetBinContent(1) +  hist0.GetBinContent(0))
+            hist0.SetBinContent(hist0.GetNbinsX() , hist0.GetBinContent(hist0.GetNbinsX() ) +  hist0.GetBinContent(hist0.GetNbinsX() + 1))
+            hist0.Draw("HIST")
 
-            hists_ditionary[1][celltype][feature].Scale(1/hists_ditionary[1][celltype][feature].Integral())
-            hists_ditionary[1][celltype][feature].SetLineColor(R.kRed)
-            hists_ditionary[1][celltype][feature].SetFillColor(R.kRed)
-            hists_ditionary[1][celltype][feature].SetLineWidth(1)
-            hists_ditionary[1][celltype][feature].SetMarkerSize(0)
-            hists_ditionary[1][celltype][feature].SetMaximum(1.0)
-            hists_ditionary[1][celltype][feature].SetMinimum(0.0)
-            hists_ditionary[1][celltype][feature].SetFillStyle(3335)
-            hists_ditionary[1][celltype][feature].Draw("HIST SAME")
+            hist1 = hists_ditionary[1][celltype][feature]
+            hist1.Scale(1/hist1.Integral())
+            hist1.SetLineColor(R.kRed)
+            hist1.SetFillColor(R.kRed)
+            hist1.SetLineWidth(1)
+            hist1.SetMarkerSize(0)
+            hist1.SetMaximum(1.0)
+            hist1.SetMinimum(0.0)
+            hist1.SetFillStyle(3335)
+            hist1.SetStats(0)
+            hist1.SetBinContent(1, hist1.GetBinContent(1) +  hist1.GetBinContent(0))
+            hist1.SetBinContent(hist1.GetNbinsX() , hist1.GetBinContent(hist1.GetNbinsX() ) +  hist1.GetBinContent(hist1.GetNbinsX() + 1))
+            hist1.Draw("HIST SAME")
 
-            legend = R.TLegend(0.73,0.73,1.0,1.0)
+            legend = R.TLegend(0.73,0.73,0.9,0.9)
             legend.AddEntry(hists_ditionary[0][celltype][feature],"Background","l")
             legend.AddEntry(hists_ditionary[1][celltype][feature],"Signal","l")
             legend.Draw("same")
 
-            c.SaveAs("histograms/"+ celltype + "_" + feature + ".png")
+            c.SaveAs(FOLDER+"/"+ celltype + "_" + feature + ".png")
 
 # Create histogram for every variable:
 if PLOT_HISTOGRAM_OUTPUT:
@@ -188,12 +201,9 @@ for i in range(n_batches):
     Y = getdata(data.y, data.tau_i, (n_tau, outclass))
     W = getdata(data.weights, data.tau_i,  -1)
 
-    for x_i, input_ in  enumerate(X):
-        hists[x_i]
         
-    print("Y:\n",Y[0])
-    print("W:\n",W[0])
-
+    # print("Y:\n",Y[0])
+    # print("W:\n",W[0])
 
     end = time.time()
     print(i, " end: ",end-start, ' s.')

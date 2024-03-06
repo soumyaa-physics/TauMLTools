@@ -1,0 +1,2 @@
+python Training_DisTauTag_ParticleNetv2.py experiment_name=hypertune_v2 'training_cfg.SetupBaseNN.model_name=ParticleNet_v2_pad_conv' 'training_cfg.SetupParticleNet.preprocess_mode="pad_conv"'
+python Training_DisTauTag_ParticleNetv2.py experiment_name=hypertune_v2 'training_cfg.SetupBaseNN.model_name=ParticleNet_v2_type_conv' 'training_cfg.SetupParticleNet.preprocess_mode="type_conv"'

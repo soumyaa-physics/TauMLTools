@@ -36,6 +36,9 @@ WPs_to_require: null # null to not apply WP as selection
 
 # inputs/paths
 input_samples: ??? # "sample_alias": [list of strings with tau types to be selected]
+  # stau250_lsp1_ctau100mm: ['tau']
+  # TTToSemiLeptonic-new-ntuples: ['jet']
+
   # STAU_M400_100mm-new-ntuples: ['tau']
   # STAU_M400_100mm-new-ntuples_train_sample: ['tau']
   # HeavyNeutrino_trilepton_M-10_V-0.0004_tau_massiveAndCKM_LO: ['tau']

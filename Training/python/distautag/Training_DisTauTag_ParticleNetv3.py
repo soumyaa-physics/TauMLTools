@@ -309,7 +309,8 @@ class ParticleNet(tf.keras.Model):
                 fts = self.edge_conv_layers[layer_idx](pts, fts)
 
             fts = tf.multiply(fts, mask)
-            pool = tf.reduce_mean(fts, axis=1)  # (N, C)
+            num_particles = tf.reduce_sum(mask, axis=1)  # (N, 1)
+            pool = tf.reduce_sum(fts, axis=1) / num_particles  # (N, C)
 
             x = pool
             for layer_idx, layer_param in enumerate(self.setting.fc_params):
@@ -424,14 +425,14 @@ def main(cfg: DictConfig) -> None:
 
         mlflow.log_dict(training_cfg, 'input_cfg/training_cfg.yaml')
         mlflow.log_artifact(scaling_cfg, 'input_cfg')
-        mlflow.log_artifact(to_absolute_path("Training_DisTauTag_ParticleNetv2.py"), 'input_cfg')
+        mlflow.log_artifact(to_absolute_path("Training_DisTauTag_ParticleNetv3.py"), 'input_cfg')
         if dl_config["Setup"]["save_weights"]:
             for type_keys in dl_config["Setup"]["tau_types_names"]:
                 type_name = dl_config["Setup"]["tau_types_names"][type_keys]
                 mlflow.log_artifact(f"weights_{type_name}.root")
         mlflow.log_artifact(to_absolute_path("../commonReco.py"), 'input_cfg')
         mlflow.log_artifacts('.hydra', 'input_cfg/hydra')
-        mlflow.log_artifact('Training_DisTauTag_ParticleNetv2.log', 'input_cfg/hydra')
+        mlflow.log_artifact('Training_DisTauTag_ParticleNetv3.log', 'input_cfg/hydra')
         mlflow.log_param('run_id', run_id)
         print(f'\nTraining has finished! Corresponding MLflow experiment name (ID): {cfg.experiment_name}({run_kwargs["experiment_id"]}), and run ID: {run_id}\n')
 

@@ -7,49 +7,75 @@ path_to_mlflow: ???
 experiment_id: ???
 discriminators: # in the format run_id -> cfg
 
-  # -------------------------------------- 1m MC mass points
-
+  # -------------------------------------- compare the effect of the agregator
   input_1:
-    run_id: 145c6108c09640f4b61670bd4d40fded
-    name: "STAU: 100GeV, 100cm"
-    dataset_alias: 'MIX_TTSemiLep_stau100_lsp1_ctau1000mm'
+    run_id: 89d74e3d6851467c8c7b5d814384b90f
+    name: "w/ valid count"
+    dataset_alias: 'MIX_TTSemiLep_stau250_lsp1_ctau100mm'
     curve_types: ['roc_curve'] 
     plot_cfg:
       color: black
-      dashed: false
-      alpha: 0.9
+      dashed: true
+      alpha: 1.
       dots_only: false # if true, possible also to specify `marker_size` here
       with_errors: true # plot error bars for each of `curve_types`
 
   input_2:
-    run_id: 145c6108c09640f4b61670bd4d40fded
-    name: "STAU: 250GeV, 100cm"
-    dataset_alias: 'MIX_TTSemiLep_stau250_lsp1_ctau1000mm'
+    run_id: a6eabb83ccb345d3b4f07e13a1c72a2d 
+    name: "w/ reduce_mean"
+    dataset_alias: 'MIX_TTSemiLep_stau250_lsp1_ctau100mm'
     curve_types: ['roc_curve'] 
     plot_cfg:
       color: blue
-      dashed: false
-      alpha: 0.9
+      dashed: true
+      alpha: 1.
       dots_only: false # if true, possible also to specify `marker_size` here
       with_errors: true # plot error bars for each of `curve_types`
 
-  input_3:
-    run_id: 145c6108c09640f4b61670bd4d40fded
-    name: "STAU: 400GeV, 100cm"
-    dataset_alias: 'MIX_TTSemiLep_stau400_lsp1_ctau1000mm'
-    curve_types: ['roc_curve'] 
-    plot_cfg:
-      color: green
-      dashed: false
-      alpha: 0.9
-      dots_only: false # if true, possible also to specify `marker_size` here
-      with_errors: true # plot error bars for each of `curve_types`
+
+  # -------------------------------------- 1m MC mass points
+
+  # input_1:
+  #   run_id: a27159734e304ea4b7f9e0042baa9e22
+  #   name: "STAU: 100GeV, 100cm"
+  #   dataset_alias: 'MIX_TTSemiLep_stau100_lsp1_ctau1000mm'
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: black
+  #     dashed: false
+  #     alpha: 0.9
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # input_2:
+  #   run_id: a27159734e304ea4b7f9e0042baa9e22
+  #   name: "STAU: 250GeV, 100cm"
+  #   dataset_alias: 'MIX_TTSemiLep_stau250_lsp1_ctau1000mm'
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: blue
+  #     dashed: false
+  #     alpha: 0.9
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
+
+  # input_3:
+  #   run_id: a27159734e304ea4b7f9e0042baa9e22
+  #   name: "STAU: 400GeV, 100cm"
+  #   dataset_alias: 'MIX_TTSemiLep_stau400_lsp1_ctau1000mm'
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: green
+  #     dashed: false
+  #     alpha: 0.9
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
 
 
   # -------------------------------------- 10cm MC mass points
 
   # input_1:
-  #   run_id: 145c6108c09640f4b61670bd4d40fded
+  #   run_id: a27159734e304ea4b7f9e0042baa9e22
   #   name: "STAU: 100GeV, 10cm"
   #   dataset_alias: 'MIX_TTSemiLep_stau100_lsp1_ctau100mm'
   #   curve_types: ['roc_curve'] 
@@ -61,7 +87,7 @@ discriminators: # in the format run_id -> cfg
   #     with_errors: true # plot error bars for each of `curve_types`
 
   # input_2:
-  #   run_id: 145c6108c09640f4b61670bd4d40fded
+  #   run_id: a27159734e304ea4b7f9e0042baa9e22
   #   name: "STAU: 250GeV, 10cm"
   #   dataset_alias: 'MIX_TTSemiLep_stau250_lsp1_ctau100mm'
   #   curve_types: ['roc_curve'] 
@@ -73,7 +99,7 @@ discriminators: # in the format run_id -> cfg
   #     with_errors: true # plot error bars for each of `curve_types`
 
   # input_3:
-  #   run_id: 145c6108c09640f4b61670bd4d40fded
+  #   run_id: a27159734e304ea4b7f9e0042baa9e22
   #   name: "STAU: 400GeV, 10cm"
   #   dataset_alias: 'MIX_TTSemiLep_stau400_lsp1_ctau100mm'
   #   curve_types: ['roc_curve'] 
@@ -431,4 +457,4 @@ output_dir: plot_STAU_MassPoints
 # output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lxy${bin.Lxy[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lxy${bin.Lxy[1]}'
 # output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lrel${bin.Lrel[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lrel${bin.Lrel[1]}'
 # output_name: 'roc_curve_vs_${vs_type}_PU_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lxy${bin.Lrel[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lxy${bin.Lrel[1]}'
-output_name: 'high_lifetime_roc_curve_vs_${vs_type}_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lrel${bin.Lrel[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lrel${bin.Lrel[1]}'
+output_name: 'low_lifetime_roc_curve_vs_${vs_type}_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lrel${bin.Lrel[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lrel${bin.Lrel[1]}'

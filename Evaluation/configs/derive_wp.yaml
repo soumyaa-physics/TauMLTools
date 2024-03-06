@@ -24,7 +24,7 @@ wp_maker:
   # convergence params
   epsilon: 1e-5
   n_iterations: 100
-  verbose: False
+  verbose: True
   rounding: 4
 
 create_df:
@@ -37,7 +37,8 @@ create_df:
   path_to_preds: "${create_df.path_to_mlflow}/${create_df.experiment_id}/${create_df.run_id}/artifacts/predictions/"
   tau_type_to_select: tau
   pred_samples: # samples in `path_to_preds` to take taus from 
-    STAU_M400_100mm-new-ntuples: 
+    # STAU_M400_100mm-new-ntuples_train_sample:
+    stau250_lsp1_ctau100mm:
       filename_pattern: 'eventTuple_*.h5'
       sample_lumi: 1.0
       reweight_to_lumi: 1.0
@@ -68,7 +69,7 @@ create_df:
   # paths to input ROOT files will be retrieved from corresponding pred_input_filemap.json
   add_columns_from: 'inputs' # either "predictions" or "inputs"
   add_columns: [ 'jet_pt', 'jet_eta' ]
-  selection: '(jet_pt>=30) and (jet_pt<1000) and (abs(jet_eta) < 2.3)'
+  selection: '(jet_pt>=30) and (abs(jet_eta) < 2.4)'
   # selection: '(tau_pt>=30) and (tau_pt<80) and (abs(tau_eta) < 2.3) and (abs(tau_dz) < 0.2) and not (tau_decayMode in [5,6])'
 
   group_or_tree_name: taus # add_columns // taus -- either group name (add_columns_from=prediction) or tree name (add_columns_from=inputs)

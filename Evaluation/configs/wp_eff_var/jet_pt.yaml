@@ -3,8 +3,7 @@ var_cfg:
   _args_: ["${get_method:__main__.plot_efficiency}"]
 
   var_name: jet_pt
-  var_bins: [ 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80, 90, 100, 
-              120, 140, 160, 180, 200, 300, 1000 ]
+  var_bins: [ 20, 30, 40, 50, 60, 70, 100, 120, 1000 ]
 
   xlabels: null 
   xerr: null
@@ -13,8 +12,8 @@ var_cfg:
   yscale_1: linear
   yscale_2: log
 
-  ylim_1: [0.0, 1]
-  ylim_2: [5e-7, 2e-1]
+  ylim_1: [0.1, 1]
+  ylim_2: [5e-7, 1.0]
 
   xtitle: "$p_{T}$ (GeV)"
   ytitle_1: Tau ID efficiency

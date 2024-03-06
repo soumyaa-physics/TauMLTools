@@ -235,6 +235,8 @@ public:
         getGlobVecRef(3, -999);
         getGlobVecRef(4, -999);
 
+        getGlobVecRef(5, tau.jet_nConstituents);
+
         if(jet_match_type)
         {
             if(jet_match_type == JetType::tau)

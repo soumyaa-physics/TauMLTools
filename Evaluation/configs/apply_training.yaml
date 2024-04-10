@@ -12,7 +12,7 @@ training_cfg_upd:
     n_globals            : 6
     input_type           : "ROOT"
     get_pu_jets          : False
-    take_all_taus        : True
+    take_all_taus        : True # means only kinematic requirements are applied (no vertex cut)
 
   SetupNN:
     n_batches: -1

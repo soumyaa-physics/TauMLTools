@@ -13,15 +13,16 @@ run_id: ???
 vs_type: ??? # jet/e/mu
 dataset_alias: ??? # alias to reference a mixture of input_samples below, e.g. tau_DY_jet_TT
 bins:
-  jet_pt: [[20, 1000], [20, 50], [50, 100], [100, 1000]]
-  jet_eta: [[-2.3, 2.3]]
+  jet_pt: [[20, 1000], [20, 30], [30, 40], [40, 50], [50, 100], [100, 1000]]
+  jet_eta: [[-2.3, 2.3], [-1.3, 1.3]]
   Lrel: [
           [0.0, 200.0],
           [0.0, 1.0],
           [1.0, 5.0],
           [5.0, 20.0],
           [20.0, 50.0],
-          [50.0, 200.0]
+          [50.0, 100.0],
+          [100.0, 200.0]
         ]
 # dm_bins: [[0, 1, 2, 10, 11]]
 
@@ -44,6 +45,10 @@ input_samples: ??? # "sample_alias": [list of strings with tau types to be selec
   # HeavyNeutrino_trilepton_M-10_V-0.0004_tau_massiveAndCKM_LO: ['tau']
   # TTToSemiLeptonic-new-ntuples: ['jet']
   # TTToSemiLeptonic-new-ntuples-plus-PU : ['jet']
+  # AN-2024-HeavyNeutrino_trilepton_M-10_V-0.0004_tau_massiveAndCKM_LO: ['tau']
+  # AN-2024-STAU_M100_100mm: ['tau']
+  # AN-2024-stau100_lsp1_ctau1000mm: ['tau']
+  # AN-2024-TTToSemiLeptonic: ['jet']
 
 path_to_input: null
 path_to_pred: '${path_to_mlflow}/${experiment_id}/${run_id}/artifacts/predictions/{sample_alias}/*_pred.h5'

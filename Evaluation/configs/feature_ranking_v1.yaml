@@ -1,0 +1,63 @@
+# will update baseline training cfg (retrieved from run artifacts) with these parameters
+training_cfg_upd:
+  Setup:
+    n_tau: 500
+    # Change this for distautag v1
+    dataloader_core: "TauMLTools/Training/interface/DataLoaderDisTauTag_main.h"
+    debug: False
+    recompute_jet_type   : True
+    prop_y_glob          : True # This probagate Glob features (needed for evaluation)
+    include_mismatched   : False # whether to keep tau candidates with tau_type not present in `tau_types_names`
+    tau_types_names      : { "0":"jet", "1":"tau",  }
+    n_globals            : 6
+    input_type           : "ROOT"
+    get_pu_jets          : False
+    take_all_taus        : True # means only kinematic requirements are applied (no vertex cut)
+
+  SetupNN:
+    n_batches: -1
+    n_batches_val: -1
+    validation_split: 0.
+    max_queue_size: 1
+    n_load_workers: 1
+
+
+  GlobalVariables : [
+    "jet_pt",
+    "jet_eta",
+    "Lrel",
+    "Lxy",
+    "Lz",
+    "nConstituents"
+  ]
+
+Objects_to_study : [ PfCand, PfCandCategorical ]
+dataloader_module: DataLoaderReco
+events_to_consider: 10000
+
+# mlflow info
+path_to_mlflow: ???
+experiment_id: ???
+run_id: ???
+
+# training/scaling cfg to init DataLoader class
+path_to_training_cfg: ${path_to_mlflow}/${experiment_id}/${run_id}/artifacts/input_cfg/training_cfg.yaml
+# Change this for distautag v1
+scaling_cfg: ${path_to_mlflow}/${experiment_id}/${run_id}/artifacts/input_cfg/scaling_params_vDisTauTag_v1.json
+# input path and file name
+path_to_input_dir: ???
+input_filename: null # without file extension
+prediction_overwrite: True
+
+# output path and file name // will store prediction file in -> artifacts/predictions/{sample_alias}/{output_filename}.h5 
+sample_alias: ??? 
+output_filename: ${input_filename}_pred
+
+# gpu setup
+gpu_cfg: # for running on CPU specify "gpu_cfg: null" 
+  gpu_mem  : 8 # in Gb
+  gpu_index: 0
+
+# misc.
+verbose: True
+checkout_train_repo: False # whether to checkout git commit used for running the training (fetched from artifacts)

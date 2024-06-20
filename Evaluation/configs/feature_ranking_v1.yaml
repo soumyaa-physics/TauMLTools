@@ -34,6 +34,8 @@ training_cfg_upd:
 Objects_to_study : [ PfCand, PfCandCategorical ]
 dataloader_module: DataLoaderReco
 events_to_consider: 10000
+separate_first_n: false  # Whether to compute importance for the first n pfCandidates or lostTracks separately
+n_to_consider: 3  # Num
 
 # mlflow info
 path_to_mlflow: ???

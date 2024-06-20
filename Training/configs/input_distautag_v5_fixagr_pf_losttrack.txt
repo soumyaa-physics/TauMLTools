@@ -1,0 +1,1 @@
+python Training_DisTauTag_ParticleNetv3.py experiment_name=hypertune_v4_genfix_pf_losttrack 'training_cfg.SetupParticleNet.use_input_grids=[PfCand,LostTrack]'  'training_cfg.SetupBaseNN.model_name=ParticleNet_v2_pf_losttrack_fix_agregator_v2'

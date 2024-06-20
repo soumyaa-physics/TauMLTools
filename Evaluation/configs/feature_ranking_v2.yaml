@@ -32,10 +32,12 @@ training_cfg_upd:
     "nConstituents"
   ]
 
-Objects_to_study : [ PfCand, LostTrack ]
-
 dataloader_module: DataLoaderReco
-events_to_consider: 4000
+
+Objects_to_study : [ PfCand, LostTrack ]
+events_to_consider: 10000
+separate_first_n: false  # Whether to compute importance for the first n pfCandidates or lostTracks separately
+n_to_consider: 3  # Number of pfCandidates or lostTracks to consider separately
 
 # mlflow info
 path_to_mlflow: ???

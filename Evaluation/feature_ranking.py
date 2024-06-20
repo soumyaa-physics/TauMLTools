@@ -37,6 +37,7 @@ For v1 version - change `config_name='feature_ranking_v1'`
 python feature_ranking.py path_to_mlflow=../Training/python/distautag/mlruns/ experiment_id=7 run_id=a27159734e304ea4b7f9e0042baa9e22 path_to_input_dir=/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1/ sample_alias=feature_importance_stau100_lsp1_ctau100mm
 
 For v2 version - change `config_name='feature_ranking_v2'`
+python feature_ranking.py path_to_mlflow=../Training/python/distautag/mlruns/ experiment_id=7 run_id=715c0806a02a4c90856684b702c3bf2c path_to_input_dir=/nfs/dust/cms/user/mykytaua/softDeepTau/RecoML/DisTauTag/DisTauTag_prod2023/TauMLTools/new-ntuples-tau-pog-v4-ext1/ sample_alias=feature_importance_stau100_lsp1_ctau100mm
 '''
 
 @hydra.main(config_path='configs', config_name='feature_ranking_v2')
@@ -101,6 +102,8 @@ def main(cfg: DictConfig) -> None:
     # Initialize feature importance dictionary for the objects to study
     # feature_importance_dict = {key: np.zeros(len(feature_map[key])) for key in feature_map.keys() if key in objects_to_study}
     feature_importance_dict = {key: [] for key in cell_objects if key in objects_to_study}
+    if cfg_dict["separate_first_n"]:
+        separate_feature_importance_dict = {key: [[] for _ in range(cfg_dict["n_to_consider"])] for key in cell_objects if key in objects_to_study}
 
 
     events_to_take = cfg_dict["events_to_consider"] if "events_to_consider" in cfg_dict else None
@@ -113,7 +116,8 @@ def main(cfg: DictConfig) -> None:
 
         # Run predictions and compute gradients
         all_gradients_dict = {key: [] for key in cell_objects if key in objects_to_study}
-        print(f"all_gradients_dict: {all_gradients_dict}")
+        if cfg_dict["separate_first_n"]:
+            separate_all_gradients_dict = {key: [[] for _ in range(cfg_dict["n_to_consider"])] for key in cell_objects if key in objects_to_study}
 
         if cfg.verbose: print(f'\n\n--> Processing file {input_file_name}, number of taus: {n_taus}\n')
         with tqdm(total=n_taus) as pbar:
@@ -138,12 +142,16 @@ def main(cfg: DictConfig) -> None:
                 for i, key in enumerate([k for k in cell_objects if k in objects_to_study]):
                     grad = grads_list[i]
                     if grad is not None:
-                        # Convert gradients to numpy and reshape to ensure shapes match
                         grad = grad.numpy()
-                        print(f"Gradient for {key} has shape {grad.shape}")
-                        if len(grad.shape) > 1:
-                            grad = grad.reshape(-1, grad.shape[-1])
-                        all_gradients_dict[key].append(grad)
+                        if cfg_dict["separate_first_n"]:
+                            # Separate the first n pfCandidates or lostTracks
+                            if len(grad.shape) > 1:
+                                for j in range(min(cfg_dict["n_to_consider"], grad.shape[1])):
+                                    separate_all_gradients_dict[key][j].append(grad[:, j, :])
+                        else:
+                            if len(grad.shape) > 1:
+                                grad = grad.reshape(-1, grad.shape[-1])
+                            all_gradients_dict[key].append(grad)
                     else:
                         print(f"Warning: Gradient for {key} is None")
 
@@ -155,8 +163,17 @@ def main(cfg: DictConfig) -> None:
                     if events_count >= events_to_take:
                         break
 
-        for key in all_gradients_dict.keys():
-            if all_gradients_dict[key]:
+        # Compute average gradients for the objects to study
+        if cfg_dict["separate_first_n"]:
+            for key in separate_all_gradients_dict.keys():
+                for j in range(cfg_dict["n_to_consider"]):
+                    # if separate_all_gradients_dict[key][j]:
+                    separate_all_gradients_dict[key][j] = np.concatenate(separate_all_gradients_dict[key][j], axis=0)
+                    avg_gradients = np.mean(np.abs(separate_all_gradients_dict[key][j]), axis=0)
+                    separate_feature_importance_dict[key][j].append(avg_gradients)
+        else:
+            for key in all_gradients_dict.keys():
+                # if all_gradients_dict[key]:
                 all_gradients_dict[key] = np.concatenate(all_gradients_dict[key], axis=0)
                 avg_gradients = np.mean(np.abs(all_gradients_dict[key]), axis=0)
                 feature_importance_dict[key].append(avg_gradients)
@@ -164,21 +181,34 @@ def main(cfg: DictConfig) -> None:
         # if events_to_take is not None and events_count >= events_to_take:
         break
 
-    # Compute final average feature importance
-    for key in feature_importance_dict.keys():
-        feature_importance_dict[key] = np.mean(np.array(feature_importance_dict[key]), axis=0)
+
+    if cfg_dict["separate_first_n"]:
+        for key in separate_feature_importance_dict.keys():
+            for j in range(cfg_dict["n_to_consider"]):
+                separate_feature_importance_dict[key][j] = np.mean(np.array(separate_feature_importance_dict[key][j]), axis=0)
+    else:
+        # Compute final average feature importance
+        for key in feature_importance_dict.keys():
+            feature_importance_dict[key] = np.mean(np.vstack(feature_importance_dict[key]), axis=0)
+
 
     # Map indices to feature names using the provided feature_map
     combined_feature_names = []
     combined_feature_importance = []
+    if cfg_dict["separate_first_n"]:
+        for key in separate_feature_importance_dict.keys():
+            for j in range(cfg_dict["n_to_consider"]):
+                feature_names = [name for name, index in sorted(feature_map[key].items(), key=lambda item: item[1])]
+                feature_importance_mean = separate_feature_importance_dict[key][j]
+                combined_feature_names.extend([f"{name}_seq_{j}" for name in feature_names])
+                combined_feature_importance.extend(feature_importance_mean)
+    else:
+        for key in feature_importance_dict.keys():
+            feature_names = [name for name, index in sorted(feature_map[key].items(), key=lambda item: item[1])]
+            feature_importance_mean = feature_importance_dict[key]
+            combined_feature_names.extend(feature_names)
+            combined_feature_importance.extend(feature_importance_mean)
 
-    for key in feature_importance_dict.keys():
-        print(key)
-        print(feature_importance_dict[key])
-        feature_names = [name for name, index in sorted(feature_map[key].items(), key=lambda item: item[1])]
-        feature_importance_mean = feature_importance_dict[key]
-        combined_feature_names.extend(feature_names)
-        combined_feature_importance.extend(feature_importance_mean)
 
     combined_feature_importance = np.array(combined_feature_importance)
 
@@ -188,7 +218,10 @@ def main(cfg: DictConfig) -> None:
     sorted_feature_importance = combined_feature_importance[sorted_indices]
 
     # Plot the feature importance
-    plt.figure(figsize=(14, 10))
+    if cfg_dict["separate_first_n"]:
+        plt.figure(figsize=(14, 24))
+    else:
+        plt.figure(figsize=(14, 10))
     plt.barh(sorted_feature_names, sorted_feature_importance, color='skyblue')
     plt.xlabel('Average Gradient Magnitude', fontsize=14)
     plt.ylabel('Features', fontsize=14)
@@ -197,18 +230,21 @@ def main(cfg: DictConfig) -> None:
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
     plt.tight_layout(pad=3.0)
-
-    plt.savefig('feature_importance_ranking.pdf')
     plt.show()
+    if cfg_dict["separate_first_n"]:
+        name = 'feature_importance_ranking.pdf'
+    else:
+        name = 'feature_importance_combined.pdf'
 
+    plt.savefig(name)
     # Save the feature importance
     np.save('feature_importance_combined.npy', sorted_feature_importance)
 
     # log to mlflow and delete intermediate file
     with mlflow.start_run(experiment_id=cfg.experiment_id, run_id=cfg.run_id) as active_run:
-        mlflow.log_artifact('feature_importance_ranking.pdf')
+        mlflow.log_artifact(name)
         mlflow.log_artifact('feature_importance_combined.npy')
-    os.remove('feature_importance_ranking.pdf')
+    os.remove(name)
     os.remove('feature_importance_combined.npy')
 
 if __name__ == "__main__":

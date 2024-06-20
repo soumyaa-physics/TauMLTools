@@ -19,3 +19,4 @@ var_cfg:
   ytitle_1: Tau ID efficiency
   ytitle_2: "${vs_type} mis-id probability"
   legend_loc: "lower right"
+  legent_title: "$m(\\tilde{\\tau}$)=400GeV, $c\\tau_0$=10cm"

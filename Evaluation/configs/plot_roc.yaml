@@ -7,29 +7,29 @@ path_to_mlflow: ???
 experiment_id: ???
 discriminators: # in the format run_id -> cfg
 
-  input_1:
-    run_id: 715c0806a02a4c90856684b702c3bf2c
-    name: "stau100GeV_ctau10cm"
-    dataset_alias: 'AN-2024-STAU100-TTSemiLep'
-    curve_types: ['roc_curve'] 
-    plot_cfg:
-      color: black
-      dashed: true
-      alpha: 1.
-      dots_only: false # if true, possible also to specify `marker_size` here
-      with_errors: true # plot error bars for each of `curve_types`
+  # input_1:
+  #   run_id: 715c0806a02a4c90856684b702c3bf2c
+  #   name: "stau100GeV_ctau10cm"
+  #   dataset_alias: 'AN-2024-STAU100-TTSemiLep'
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: black
+  #     dashed: true
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
 
-  input_2:
-    run_id: 715c0806a02a4c90856684b702c3bf2c 
-    name: "HNL-M10GeV"
-    dataset_alias: 'AN-2024-HNL-TTSemiLep'
-    curve_types: ['roc_curve'] 
-    plot_cfg:
-      color: blue
-      dashed: true
-      alpha: 1.
-      dots_only: false # if true, possible also to specify `marker_size` here
-      with_errors: true # plot error bars for each of `curve_types`
+  # input_2:
+  #   run_id: 715c0806a02a4c90856684b702c3bf2c 
+  #   name: "HNL-M10GeV"
+  #   dataset_alias: 'AN-2024-HNL-TTSemiLep'
+  #   curve_types: ['roc_curve'] 
+  #   plot_cfg:
+  #     color: blue
+  #     dashed: true
+  #     alpha: 1.
+  #     dots_only: false # if true, possible also to specify `marker_size` here
+  #     with_errors: true # plot error bars for each of `curve_types`
 
   # -------------------------------------- compare the effect of the agregator
   # input_1:
@@ -61,7 +61,7 @@ discriminators: # in the format run_id -> cfg
 
   # input_1:
   #   run_id: a27159734e304ea4b7f9e0042baa9e22
-  #   name: "STAU: 100GeV, 100cm"
+  #   name: "stau mass: 100GeV, lifetime: 100cm"
   #   dataset_alias: 'MIX_TTSemiLep_stau100_lsp1_ctau1000mm'
   #   curve_types: ['roc_curve'] 
   #   plot_cfg:
@@ -73,7 +73,7 @@ discriminators: # in the format run_id -> cfg
 
   # input_2:
   #   run_id: a27159734e304ea4b7f9e0042baa9e22
-  #   name: "STAU: 250GeV, 100cm"
+  #   name: "stau mass: 250GeV, lifetime: 100cm"
   #   dataset_alias: 'MIX_TTSemiLep_stau250_lsp1_ctau1000mm'
   #   curve_types: ['roc_curve'] 
   #   plot_cfg:
@@ -85,7 +85,7 @@ discriminators: # in the format run_id -> cfg
 
   # input_3:
   #   run_id: a27159734e304ea4b7f9e0042baa9e22
-  #   name: "STAU: 400GeV, 100cm"
+  #   name: "stau mass: 400GeV, lifetime: 100cm"
   #   dataset_alias: 'MIX_TTSemiLep_stau400_lsp1_ctau1000mm'
   #   curve_types: ['roc_curve'] 
   #   plot_cfg:
@@ -98,41 +98,41 @@ discriminators: # in the format run_id -> cfg
 
   # -------------------------------------- 10cm MC mass points
 
-  # input_1:
-  #   run_id: a27159734e304ea4b7f9e0042baa9e22
-  #   name: "STAU: 100GeV, 10cm"
-  #   dataset_alias: 'MIX_TTSemiLep_stau100_lsp1_ctau100mm'
-  #   curve_types: ['roc_curve'] 
-  #   plot_cfg:
-  #     color: black
-  #     dashed: true
-  #     alpha: 1.
-  #     dots_only: false # if true, possible also to specify `marker_size` here
-  #     with_errors: true # plot error bars for each of `curve_types`
+  input_1:
+    run_id: a27159734e304ea4b7f9e0042baa9e22
+    name: "stau mass: 100GeV, lifetime: 10cm"
+    dataset_alias: 'MIX_TTSemiLep_stau100_lsp1_ctau100mm'
+    curve_types: ['roc_curve'] 
+    plot_cfg:
+      color: black
+      dashed: true
+      alpha: 1.
+      dots_only: false # if true, possible also to specify `marker_size` here
+      with_errors: true # plot error bars for each of `curve_types`
 
-  # input_2:
-  #   run_id: a27159734e304ea4b7f9e0042baa9e22
-  #   name: "STAU: 250GeV, 10cm"
-  #   dataset_alias: 'MIX_TTSemiLep_stau250_lsp1_ctau100mm'
-  #   curve_types: ['roc_curve'] 
-  #   plot_cfg:
-  #     color: blue
-  #     dashed: true
-  #     alpha: 1.
-  #     dots_only: false # if true, possible also to specify `marker_size` here
-  #     with_errors: true # plot error bars for each of `curve_types`
+  input_2:
+    run_id: a27159734e304ea4b7f9e0042baa9e22
+    name: "stau mass: 250GeV, lifetime: 10cm"
+    dataset_alias: 'MIX_TTSemiLep_stau250_lsp1_ctau100mm'
+    curve_types: ['roc_curve'] 
+    plot_cfg:
+      color: blue
+      dashed: true
+      alpha: 1.
+      dots_only: false # if true, possible also to specify `marker_size` here
+      with_errors: true # plot error bars for each of `curve_types`
 
-  # input_3:
-  #   run_id: a27159734e304ea4b7f9e0042baa9e22
-  #   name: "STAU: 400GeV, 10cm"
-  #   dataset_alias: 'MIX_TTSemiLep_stau400_lsp1_ctau100mm'
-  #   curve_types: ['roc_curve'] 
-  #   plot_cfg:
-  #     color: green
-  #     dashed: true
-  #     alpha: 1.
-  #     dots_only: false # if true, possible also to specify `marker_size` here
-  #     with_errors: true # plot error bars for each of `curve_types`
+  input_3:
+    run_id: a27159734e304ea4b7f9e0042baa9e22
+    name: "stau mass: 400GeV, lifetime: 10cm"
+    dataset_alias: 'MIX_TTSemiLep_stau400_lsp1_ctau100mm'
+    curve_types: ['roc_curve'] 
+    plot_cfg:
+      color: green
+      dashed: true
+      alpha: 1.
+      dots_only: false # if true, possible also to specify `marker_size` here
+      with_errors: true # plot error bars for each of `curve_types`
 
   # --------------------- Comparison of v2 (pf and pf+trk) with v1
 
@@ -460,7 +460,7 @@ reference:  # should be present in `discriminators`
   input_1: 'roc_curve'
 
 # region
-period:  # \ 2018 (13 TeV) \  Phase 2 \ # for plotting only, not used in curve selection 
+period: 2018 (13 TeV) # \ 2018 (13 TeV) \  Phase 2 \ # for plotting only, not used in curve selection 
 vs_type: ??? # jet/e/mu/tau
 dataset_alias: null # sample alias asigned in yaml cfg at eval step
 
@@ -475,7 +475,7 @@ bin:
 
 # will log the plot to the run of the first discriminator in the "discriminators" list
 # output_dir: plots_HNL # within mlflow artifacts
-output_dir: plot_HNLvsSTAU100
+output_dir: DPNotes
 
 # output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_pt_${pt_bin[0]}_${pt_bin[1]}_eta_${eta_bin[0]}_${eta_bin[1]}_dm_'
 # output_name: 'roc_curve_vs_${vs_type}_${dataset_alias}_jet_pt${bin.jet_pt[0]}_jet_eta${bin.jet_eta[0]}_Lxy${bin.Lxy[0]}_jet_pt${bin.jet_pt[1]}_jet_eta${bin.jet_eta[1]}_Lxy${bin.Lxy[1]}'

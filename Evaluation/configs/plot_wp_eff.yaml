@@ -5,16 +5,19 @@ defaults: # import plotting configuration
 vs_type: jet
 pred_samples: # factorised from create_df() args for partial calls per tau_type
   tau:
-    # STAU_M400_100mm-new-ntuples: 
-    stau250_lsp1_ctau1000mm:
+    # STAU_M400_100mm-new-ntuples_train_sample: 
+    # AN-2024-HeavyNeutrino_trilepton_M-10_V-0.0004_tau_massiveAndCKM_LO:
+    # AN-2024-STAU_M400_100mm:
+    stau400_lsp1_ctau1000mm:
       filename_pattern: '*_pred.h5' # single files, list of files and "*" are supported 
       sample_lumi: null
       reweight_to_lumi: null # null to not reweight
   jet:
-    TTToSemiLeptonic-new-ntuples:
     # TTToSemiLeptonic-new-ntuples-plus-PU:
     # STAU_M400_100mm-new-ntuples:
     # HeavyNeutrino_trilepton_M-10_V-0.0004_tau_massiveAndCKM_LO:
+    # TTToSemiLeptonic-new-ntuples:
+    AN-2024-TTToSemiLeptonic:
       filename_pattern: '*_pred.h5'
       sample_lumi: null
       reweight_to_lumi: null
@@ -30,7 +33,7 @@ WPs_to_require:
 WPs_to_plot: 
   [
      "Loose",
-     "Middle",
+     "Medium",
      "Tight",
      "VTight",
      "VVTight"
@@ -61,8 +64,11 @@ create_df: # dataframe composition
   # add_columns: [ 'jet_pt', 'jet_eta', 'jet_phi']
   # group_or_tree_name: taus # add_columns // taus -- either group name (add_columns_from=prediction) or tree name (add_columns_from=inputs)
   # selection: '(tau_pt>=20) and (tau_pt<1000) and (abs(tau_eta) < 2.3) and (abs(tau_dz) < 0.2) and not (tau_decayMode in [5,6])'
-  selection: "abs(jet_eta) < 2.4 and (jet_pt > 20)"
-  add_columns: [ 'jet_pt', 'jet_eta', 'Lrel']
+  # selection: "abs(jet_eta) > 1.5 and abs(jet_eta) < 2.3 and (jet_pt > 20)"
+  # selection: "abs(jet_eta) < 1.5 and (jet_pt > 20)"
+  selection: "abs(jet_eta) < 2.3 and (jet_pt > 20)"
+  # add_columns: [ 'jet_pt', 'jet_eta', 'Lrel', 'Lxy', 'nConstituents']
+  add_columns: [ 'jet_pt', 'jet_eta', 'Lrel', 'Lxy']
   group_or_tree_name: global_vars
 
-output_filename: wp_eff/plots_eff_test/vs_${vs_type}/${var_cfg.var_name}.png # as /path/within/mlflow/artifacts/filename.png
+output_filename: wp_eff/define_WP/vs_${vs_type}/${var_cfg.var_name}.png # as /path/within/mlflow/artifacts/filename.png

@@ -53,7 +53,7 @@ def differential_efficiency(df_true, df_fake, var_name, var_bins,
     print("thrs:", thrs)
     print("eff:", _eff1)
     print("misID:", _eff2)
-    exit()
+    # exit()
     
     for i, (var_min, var_max) in enumerate(zip(var_bins[:-1], var_bins[1:])):
         # slice dataframes in given bin
@@ -78,7 +78,7 @@ def differential_efficiency(df_true, df_fake, var_name, var_bins,
 
 def plot_efficiency(eff, eff_up, eff_down, labels, var_bins, 
                     xscale, yscale_1, yscale_2, ylim_1, ylim_2,
-                    xtitle, ytitle_1, ytitle_2, legend_loc, 
+                    xtitle, ytitle_1, ytitle_2, legend_loc, legent_title, 
                     xlabels=None, xerr=None, **kwargs):
     var_bins = np.array(var_bins)
     if xlabels is None:
@@ -88,7 +88,7 @@ def plot_efficiency(eff, eff_up, eff_down, labels, var_bins,
     if xerr is None:
         xerr = ((var_bins[1:]-var_bins[0:-1])/2)
     # ncol = len(labels) // 4
-    ncol = 1
+    ncol = 2
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15,7))
     for k in range(len(labels)):
@@ -103,7 +103,13 @@ def plot_efficiency(eff, eff_up, eff_down, labels, var_bins,
     ax1.tick_params(labelsize=14)
     ax1.grid(True)
     # print(labels, legend_loc, ncol)
-    ax1.legend(labels, fontsize=14, loc=legend_loc, ncol=ncol)
+    ax1.legend(labels, fontsize=14, loc=legend_loc,  title=legent_title, title_fontsize=15, ncol=ncol)
+    header_y = 1.02
+    ax1.text(0.01, header_y, 'CMS', fontsize=16, transform=ax1.transAxes, fontweight='bold', fontfamily='sans-serif')
+    ax1.text(0.12, header_y, 'Simulation Preliminary', fontsize=16, transform=ax1.transAxes, fontstyle='italic',
+            fontfamily='sans-serif')
+    ax1.text(0.70, header_y, "2018 (13 TeV)", fontsize=15, transform=ax1.transAxes, fontweight='bold',
+                fontfamily='sans-serif')
     if yscale_1 == 'log':
         locmin = matplotlib.ticker.LogLocator(base=10.0,subs=(0.98,0.99,0.995),numticks=12)
         ax1.yaxis.set_minor_locator(locmin)
@@ -116,8 +122,12 @@ def plot_efficiency(eff, eff_up, eff_down, labels, var_bins,
     ax2.set_ylabel(ytitle_2, fontsize=16)
     ax2.tick_params(labelsize=14)
     ax2.grid(True)
-    ax2.legend(labels, fontsize=14, loc=legend_loc, ncol=ncol)
-    
+    ax2.legend(labels, fontsize=14, loc=legend_loc, title=legent_title, title_fontsize=15, ncol=ncol)
+    ax2.text(0.01, header_y, 'CMS', fontsize=16, transform=ax2.transAxes, fontweight='bold', fontfamily='sans-serif')
+    ax2.text(0.12, header_y, 'Simulation Preliminary', fontsize=16, transform=ax2.transAxes, fontstyle='italic',
+            fontfamily='sans-serif')
+    ax2.text(0.70, header_y, "2018 (13 TeV)", fontsize=15, transform=ax2.transAxes, fontweight='bold',
+                fontfamily='sans-serif')
     if xlabels is None:
         ax1.set_xlim([var_bins[0], var_bins[-1]])
         ax2.set_xlim([var_bins[0], var_bins[-1]])

@@ -3,8 +3,11 @@ var_cfg:
   _args_: ["${get_method:__main__.plot_efficiency}"]
 
   var_name: jet_eta
-  var_bins: [-2.3, -1.78888889, -1.27777778, -0.76666667, -0.25555556,
-            0.25555556, 0.76666667, 1.27777778, 1.78888889, 2.3]
+  # var_bins: [-2.3       , -2.05789474, -1.81578947, -1.57368421, -1.33157895,
+  #           -1.08947368, -0.84736842, -0.60526316, -0.36315789, -0.12105263,
+  #             0.12105263,  0.36315789,  0.60526316,  0.84736842,  1.08947368,
+  #             1.33157895,  1.57368421,  1.81578947,  2.05789474,  2.3       ]
+  var_bins: [-2.3, -1.5, 1.5, 2.3]
 
   xlabels: null 
   xerr: null
@@ -13,10 +16,11 @@ var_cfg:
   yscale_1: linear
   yscale_2: log
 
-  ylim_1: [0.0, 1]
+  ylim_1: [0.6, 1.05]
   ylim_2: [5e-7, 2e-1]
 
-  xtitle: '$\eta$'
+  xtitle: '$\eta(jet)$'
   ytitle_1: Tau ID efficiency
   ytitle_2: "${vs_type} mis-id probability"
   legend_loc: "lower right"
+  legent_title: "$m(\\tilde{\\tau}$)=400GeV, $c\\tau_0$=10cm"

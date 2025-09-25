@@ -67,6 +67,9 @@ def getEraCfg(era):
     elif era == Era.Run3_2022:
         from Configuration.Eras.Era_Run3_cff import Run3
         return Run3
+    elif era == Era.Run3_2024:
+        from Configuration.Eras.Era_Run3_cff import Run3
+        return Run3
     elif isPhase2(era):
         from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
         return Phase2C9
